@@ -1,0 +1,8 @@
+# Models
+*.npz
+*.npy
+
+**/datasets
+
+/bin/
+/lib/
