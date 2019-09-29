@@ -47,4 +47,5 @@ CUDAのバージョンに該当するCupyをダウンロードする必要があ
 `nvidia-smi`でバージョンを確認してから、[Cupy Documentation](https://docs-cupy.chainer.org/en/stable/install.html#install-cupy)を参考に該当するバージョンをpipで入れてください。
 
 ![](./images/nvidia-smi.png)
+
 僕が研究していたときはCUDA10.1だったので`pip install cupy-cuda101`で大丈夫でした。
