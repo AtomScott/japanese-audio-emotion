@@ -7,4 +7,7 @@ accent_color: rgb(67,83,106)
 # file: _config.yml
 author:
   social:
-    github:  https://github.com/AtomScott/chainer-facial-hourglass # now github appears first
+    github:  https://github.com/AtomScott/japanese-audio-emotion
+
+paginate:      5
+paginate_path: /blog/page-:num/
