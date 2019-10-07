@@ -147,6 +147,42 @@ def vis_points(img, points, ax=None, params={}):
         ax.set_ylim(bottom=H - 1, top=0)
     return ax
 
+def vis_points_3d(points, ax=None, params={}):
+    """Visualize points in 3d space
+
+    Args:
+        img: An image (3, W, H)
+
+        points: A list of Points to Visualize (M, N, 2)
+
+        ax: Matplotlib Axes
+
+        params: Dictionary of params for matplotlib
+    Returns:
+
+    """
+    cm = plt.get_cmap('gist_rainbow')
+    H = params.pop('H')
+    W = params.pop('W')
+
+    with plt.rc_context(params):
+
+        n_inst = len(points)
+
+        for i in range(n_inst):
+            pnts = points[i]
+            n_point = len(pnts)
+
+            colors = [cm(k / n_point) for k in range(n_point)]
+
+            for k in range(n_point):
+                ax.scatter(pnts[k][0], pnts[k][1], pnts[k][2], c=[colors[k]], s=100)
+
+        ax.set_xlim(left=0, right=W)
+        ax.set_ylim(bottom=H - 1, top=0)
+    return ax
+
+
 def draw_facial_landmark(inpath, outpath):
     """
     Draw facial landmarks onto images.
@@ -186,4 +222,68 @@ def draw_facial_landmark(inpath, outpath):
 
     plt.axis('off')
     plt.savefig(outpath)
+    plt.show()
+
+# TODO: Merge compare_bbox_images and compare_bbox_images into function that takes a dict with data and params and outputs images formatted accordingly?
+def compare_bbox_images(img, HOG_out, CNN_out, FRCNN_out):
+    """
+    A simple util used in tw;sm to compare HOG, CNN, FRCNN bbox outputs.
+
+    Args:
+        variable (type): description
+
+    Returns:
+        type: description
+
+    Raises:
+        Exception: description
+
+    """
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
+
+    chainercv.visualizations.vis_bbox(img, HOG_out,ax=ax1)
+    ax1.set_title("HOG")
+    ax1.axis('off')
+
+    chainercv.visualizations.vis_bbox(img, CNN_out, ax=ax2)
+    ax2.set_title("CNN")
+    ax2.axis('off')
+
+    FRCNN_bbox = FRCNN_out[0][0].astype('int')
+    chainercv.visualizations.vis_bbox(img, FRCNN_bbox, ax=ax3)
+    ax3.set_title("FRCNN")
+    ax3.axis('off')
+
+    plt.show()
+
+def compare_landmark_images(img, pts1, pts2):
+    """
+    A simple util used in tw;sm to compare facial landmark recognition algorithms
+
+    Args:
+        variable (type): description
+
+    Returns:
+        type: description
+
+    Raises:
+        Exception: description
+
+    """
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
+
+    chainercv.visualizations.vis_image(img, ax1)
+    ax1.set_title("ROI")
+    ax1.axis('off')
+
+    params = {'scatter.marker': '.'}
+    vis_points(img, pts1, ax2, params)
+    ax2.set_title("Regression Trees")
+    ax2.axis('off')
+
+    vis_points(img, pts2, ax3, params)
+    ax3.set_title("HG")
+    ax3.axis('off')
+
     plt.show()
