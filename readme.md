@@ -1,4 +1,4 @@
-This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac.jp/) from Tsukuba University.
+This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac.jp/) from University of Tsukuba.
 
 ![](./images/xperlab.jpg)
 
@@ -10,15 +10,50 @@ This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac
 
 - Emotion recognition on Japanese audio
 
-##
+## Dependencies
+
+(In Progress)
+
+
+## Replication
+
+After cloning this repository and sorting out dependencies, running the following commands from root dir should work.
+If it doesn't, report the issue on github and I might be able to help you out.
+
+### Image Dataset
+
+Run the following code to download the image dataset.
+
+``` bash
+# Example
+python tools/create_image_dataset.py \
+--namelist ./namelist.txt \
+
+```
+
+### Video Dataset
+
+Run the following code to download the video dataset.
+
+``` bash
+# Example
+python tools/create_video_dataset.py \
+--
+```
+
+### Train
+
+Run the following code to train the audio emotion model.
+
+```bash 
+# Example
+python tools/train.py \
+--
+```
 
 ## Too Short; Want More?
 
 [Here](/TSWM/TSWM.ipynb) is a detailed notebook (日本語) of the techniques used.
-
-## Dependencies
-
-(In Progress)
 
 ## 研究室向け
 
