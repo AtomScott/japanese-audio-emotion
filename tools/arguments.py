@@ -32,6 +32,11 @@ def parse_args():
         default=30,
         help='Number of images to download')
     parser.add_argument(
+        '--n_videos',
+        type=int,
+        default=1,
+        help='Number of images to download')
+    parser.add_argument(
         '--out_dir_path',
         type=str,
         default='../datasets/XperFace/',

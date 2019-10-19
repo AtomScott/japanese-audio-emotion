@@ -15,6 +15,12 @@ import numpy as np
 
 from pyod.models.auto_encoder import AutoEncoder
 
+from pytube import YouTube
+from bs4 import BeautifulSoup as bs
+import requests, re
+
+import cv2
+
 def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
     """Downloads face images for a query.
     
@@ -45,6 +51,7 @@ def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedr
     }
     out_image_paths = response.download(args)[0][query]
     if len(out_image_paths) == 0:
+        logger.warning("Error. Couldn't get images, trying again.")
         out_image_paths = download_images(query, n_images, out_dir_path, chromedriver_path)
 
     return out_image_paths
@@ -121,6 +128,23 @@ def detect_outliers(lst):
     logger.info('{:.0%} are outliers'.format(1 - len(inliers) / len(lst)))
     return inliers
 
+# add docstring
+def scrape_videos(query, out_path, n):
+    url ='https://www.youtube.com/results?search_query='+query
+    r = requests.get(url)
+    page = r.text
+    soup=bs(page,'html.parser')
+    res=soup.find_all('a',{'href': re.compile(r'watch')})
+    i = 0
+    for l in res:
+        link = "https://www.youtube.com"+l.get("href")
+        myVideo = YouTube(link)
+        myVideo.streams.first().download(output_path=out_path, filename='ヒカキン')
+        i += 1 
+        logger.info("Downloaded video: {0}".format(link))
+        if i >= n:
+            break
+
 
 if __name__ =="__main__":
     args = parse_args()
@@ -131,10 +155,12 @@ if __name__ =="__main__":
     # * Set paths
     #############
     image_dir_path = os.path.join(args.out_dir_path, 'images', args.query)
+    video_dir_path = os.path.join(args.out_dir_path, 'videos', args.query)
     embedding_dir_path = os.path.join(args.out_dir_path, 'embeddings', args.query)
     if args.overwrite and os.path.isdir(args.out_dir_path):
         shutil.rmtree(args.out_dir_path)
     os.makedirs(image_dir_path, exist_ok=True)
+    os.makedirs(video_dir_path, exist_ok=True)
     os.makedirs(embedding_dir_path, exist_ok=True)
 
     ##################
@@ -160,7 +186,26 @@ if __name__ =="__main__":
     #####################
     embeddings = detect_outliers(embeddings)
 
-    ##################
+    #################
     # * Scrape videos
     #################
+    video_paths = scrape_videos(args.query, video_dir_path, args.n_videos)
 
+    ######################
+    # * Track targets face 
+    ######################
+    
+    # loop video frames
+    for video_path in video_paths:
+    for index, frame in enumerate(frames):
+        # Read frame 
+
+        # if first frame, skip 
+
+        # Face detection
+
+        # associate to faces from frame before
+        associate_faces
+
+    
+    
