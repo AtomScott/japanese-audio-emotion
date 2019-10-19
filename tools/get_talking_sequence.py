@@ -13,6 +13,8 @@ from PIL import Image
 import torch
 import numpy as np
 
+from pyod.models.auto_encoder import AutoEncoder
+
 def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
     """Downloads face images for a query.
     
@@ -93,7 +95,7 @@ def embed_faces(in_image_paths, save_embeddings=True, image_size=160, replace_im
                     out_embedding_path = os.path.join(dir_path.replace('images', 'embeddings'), fname+str(index)+'.npy')
                     np.save(out_embedding_path, embedding)  
             
-                all_embeddings.append(embedding)
+                all_embeddings.append(embedding.cpu().detach().numpy()[0])
                 all_faces.append(face)
                 all_boxes.append(box)
 
@@ -101,6 +103,24 @@ def embed_faces(in_image_paths, save_embeddings=True, image_size=160, replace_im
             logger.warning('Bad Image: {0}. Skipping..'.format(e))
     
     return all_embeddings, all_faces, all_boxes
+
+
+# TODO: add docstring
+def detect_outliers(lst):
+    clf = AutoEncoder(verbose=1)
+    clf.fit(lst)
+    
+    inliers = []
+    for index, data in enumerate(lst):
+        y = clf.predict(data.reshape(1,-1))
+        if y: # y==1 for outliers
+            logger.warning('Found outlier: {0}'.format(index))
+        else:
+            inliers.append(data)
+
+    logger.info('{:.0%} are outliers'.format(1 - len(inliers) / len(lst)))
+    return inliers
+
 
 if __name__ =="__main__":
     args = parse_args()
@@ -138,3 +158,9 @@ if __name__ =="__main__":
     #####################
     # * Outlier Detection
     #####################
+    embeddings = detect_outliers(embeddings)
+
+    ##################
+    # * Scrape videos
+    #################
+
