@@ -4,6 +4,10 @@ This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac
 
 # Deep learning emotion recognition with Japanese audio.
 
+## ToDo
+
+- assetsの整理
+
 ## Contributions
 
 - A large dataset of short speech videos of Japanese personel. These were collected from YouTube.
@@ -84,3 +88,4 @@ CUDAのバージョンに該当するCupyをダウンロードする必要があ
 ![](./images/nvidia-smi.png)
 
 僕が研究していたときはCUDA10.1だったので`pip install cupy-cuda101`で大丈夫でした。
+
