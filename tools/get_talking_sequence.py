@@ -19,7 +19,10 @@ from pytube import YouTube
 from bs4 import BeautifulSoup as bs
 import requests, re
 
-import cv2
+import imageio  
+from tqdm import tqdm
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+
 
 def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
     """Downloads face images for a query.
@@ -136,15 +139,24 @@ def scrape_videos(query, out_path, n):
     soup=bs(page,'html.parser')
     res=soup.find_all('a',{'href': re.compile(r'watch')})
     i = 0
+    out_file_paths = []
+    links = []
     for l in res:
+        fname = '{0}.mp4'.format(i)
         link = "https://www.youtube.com"+l.get("href")
-        myVideo = YouTube(link)
-        myVideo.streams.first().download(output_path=out_path, filename='ヒカキン')
-        i += 1 
-        logger.info("Downloaded video: {0}".format(link))
+        if link not in links:
+            links.append(link)
+            myVideo = YouTube(link)
+            print(out_path, str(i))
+            myVideo.streams.first().download(output_path=out_path, filename=str(i))
+            i += 1 
+            out_file_paths.append(os.path.join(out_path, fname))
+            logger.info("Downloaded video: {0} @ {1}".format(link, os.path.join(out_path, fname)))
+        else:
+            pass
         if i >= n:
             break
-
+    return out_file_paths
 
 if __name__ =="__main__":
     args = parse_args()
@@ -197,15 +209,51 @@ if __name__ =="__main__":
     
     # loop video frames
     for video_path in video_paths:
-    for index, frame in enumerate(frames):
-        # Read frame 
+        vid = imageio.get_reader(video_path,  'ffmpeg') # fails sometimes
 
-        # if first frame, skip 
+        # get start time and end times
+        for i, im in tqdm(enumerate(vid)):
+            1+1
+            # logger.info('Mean of frame {0} is {1}, {2}, {3}'.format(i, im.mean(), type(im), im.shape))
 
-        # Face detection
+            # TODO: face detection
+            # Get list of all face bboxes in one frame
+            bboxes = embed_faces(im)
 
-        # associate to faces from frame before
-        associate_faces
+            # TODO: Association with IoU and Embeddings
+
+
+            # TODO Add chunk to list
+
+        # TODO split vid to chunks
+        # for start_time, end_time in chunks:
+
+        #     out_video-path = ''
+        #     ffmpeg_extract_subclip(video_path, start_time, end_time, targetname=out_video-path)
+
+
+                    
+
+            # flag, frame = cap.read()
+            # if flag: # The frame is ready and already captured
+            #     pos_frame = cap.get(cv2.CAP_PROP_POS_FRAMES)
+            #     print(str(pos_frame)+" frames", frame.shape, type(frame))
+            #     # Face detection
+
+            #     # associate to faces from frame before
+            # else:
+            #     # The next frame is not ready, so we try to read it again
+            #     cap.set(cv2.CAP_PROP_POS_FRAMES, pos_frame-1)
+
+            # if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
+            #     # EOF
+            #     break
+    
+
+
+        
+
+        
 
     
     

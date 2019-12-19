@@ -1,0 +1,46 @@
+.dl-table {
+  a {
+    padding-bottom: 0.4rem;
+  }
+
+  .btn {
+    margin: 1.5rem 0;
+  }
+}
+a.sidebar-nav-item{
+  border-bottom: none;
+}
+pre.highlight{
+  width: 100%;
+}
+.katex-display{
+  width: 100%;
+}
+
+.desc{
+  padding-left: 1.5em;
+  border-left: whitesmoke 1px solid;
+
+  h3, h4, h5{
+    margin-top: 0.5em;
+    font-weight: bolder;
+  }
+  dl, p{
+    font-size: small;
+    margin: 0.5em;
+  }
+
+  h5{
+    border-bottom: 2px gray solid;
+  }
+
+  .color-block{
+    h5{
+      border: none;
+    }
+    margin-left: -1em;
+    width: 100%;
+    padding-left: 1.0em ;
+    background-color: rgb(82, 82, 0);
+  }
+}
