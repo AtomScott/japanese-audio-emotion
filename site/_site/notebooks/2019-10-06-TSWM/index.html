@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en"><!--
+ __  __                __                                     __
+/\ \/\ \              /\ \             __                    /\ \
+\ \ \_\ \   __  __    \_\ \      __   /\_\      __       ___ \ \ \/'\
+ \ \  _  \ /\ \/\ \   /'_` \   /'__`\ \/\ \   /'__`\    /'___\\ \ , <
+  \ \ \ \ \\ \ \_\ \ /\ \L\ \ /\  __/  \ \ \ /\ \L\.\_ /\ \__/ \ \ \\`\
+   \ \_\ \_\\/`____ \\ \___,_\\ \____\ _\ \ \\ \__/.\_\\ \____\ \ \_\ \_\
+    \/_/\/_/ `/___/> \\/__,_ / \/____//\ \_\ \\/__/\/_/ \/____/  \/_/\/_/
+                /\___/                \ \____/
+                \/__/                  \/___/
+
+Powered by Hydejack v8.5.2 <https://hydejack.com/>
+-->
+
+
+
+
+
+
+
+
+
+
+
+<head>
+  
+
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+
+
+
+  
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Hyde v2* | Japanese Audio Emotion Recognition</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Hyde v2*" />
+<meta property="og:locale" content="en" />
+<meta name="description" content="Hyde is a brazen two-column Jekyll theme. It’s based on Poole, the Jekyll butler." />
+<meta property="og:description" content="Hyde is a brazen two-column Jekyll theme. It’s based on Poole, the Jekyll butler." />
+<link rel="canonical" href="http://localhost:4000/site/notebooks/2019-10-06-TSWM/" />
+<meta property="og:url" content="http://localhost:4000/site/notebooks/2019-10-06-TSWM/" />
+<meta property="og:site_name" content="Japanese Audio Emotion Recognition" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-01-02T00:00:00+09:00" />
+<script type="application/ld+json">
+{"@type":"WebPage","publisher":{"@type":"Organization","logo":{"@type":"ImageObject","url":"http://localhost:4000/site/assets/icons/icon.png"}},"url":"http://localhost:4000/site/notebooks/2019-10-06-TSWM/","headline":"Hyde v2*","dateModified":"2014-01-02T00:00:00+09:00","datePublished":"2014-01-02T00:00:00+09:00","description":"Hyde is a brazen two-column Jekyll theme. It’s based on Poole, the Jekyll butler.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  
+
+  
+
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Japanese Audio Emotion Recognition">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<meta name="application-name" content="Japanese Audio Emotion Recognition">
+<meta name="msapplication-config" content="/site/assets/ieconfig.xml">
+
+
+<meta name="theme-color" content="rgb(67,83,106)">
+
+
+<meta name="generator" content="Hydejack v8.5.2" />
+
+<link type="application/atom+xml" rel="alternate" href="http://localhost:4000/site/feed.xml" title="Japanese Audio Emotion Recognition" />
+
+
+
+<link rel="alternate" href="http://localhost:4000/site/notebooks/2019-10-06-TSWM/" hreflang="en">
+
+<link rel="shortcut icon" href="/site/assets/icons/favicon.ico">
+<link rel="apple-touch-icon" href="/site/assets/icons/icon.png">
+
+<link rel="manifest" href="/site/assets/manifest.json">
+
+
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+
+
+
+<link rel="dns-prefetch" href="/site/" id="_baseURL">
+<link rel="dns-prefetch" href="/site/sw.js" id="_hrefSW">
+<link rel="dns-prefetch" href="/site/assets/bower_components/katex/dist/katex.min.js" id="_hrefKatexJS">
+<link rel="dns-prefetch" href="/site/assets/bower_components/katex/dist/katex.min.css" id="_hrefKatexCSS">
+<link rel="dns-prefetch" href="/site/assets/bower_components/katex/dist/contrib/copy-tex.min.js" id="_hrefKatexCopyJS">
+<link rel="dns-prefetch" href="/site/assets/bower_components/katex/dist/contrib/copy-tex.min.css" id="_hrefKatexCopyCSS">
+<link rel="dns-prefetch" href="/site/assets/img/swipe.svg" id="_hrefSwipeSVG">
+
+
+
+
+<script>
+!function(e,t){"use strict";function n(e,t,n,o){e.addEventListener?e.addEventListener(t,n,o):e.attachEvent?e.attachEvent("on"+t,n):e["on"+t]=n}e.loadJS=function(e,o){var r=t.createElement("script");r.src=e,o&&n(r,"load",o,{once:!0});var a=t.scripts[0];return a.parentNode.insertBefore(r,a),r},e._loaded=!1,e.loadJSDeferred=function(o,r){function a(){e._loaded=!0,r&&n(c,"load",r,{once:!0});var o=t.scripts[0];o.parentNode.insertBefore(c,o)}var c=t.createElement("script");return c.src=o,e._loaded?a():n(e,"load",a,{once:!0}),c},e.setRel=e.setRelStylesheet=function(e){function o(){this.rel="stylesheet"}n(t.getElementById(e),"load",o,{once:!0})}}(window,document);
+;
+!function(a){"use strict";var b=function(b,c,d){function e(a){return h.body?a():void setTimeout(function(){e(a)})}function f(){i.addEventListener&&i.removeEventListener("load",f),i.media=d||"all"}var g,h=a.document,i=h.createElement("link");if(c)g=c;else{var j=(h.body||h.getElementsByTagName("head")[0]).childNodes;g=j[j.length-1]}var k=h.styleSheets;i.rel="stylesheet",i.href=b,i.media="only x",e(function(){g.parentNode.insertBefore(i,c?g:g.nextSibling)});var l=function(a){for(var b=i.href,c=k.length;c--;)if(k[c].href===b)return a();setTimeout(function(){l(a)})};return i.addEventListener&&i.addEventListener("load",f),i.onloadcssdefined=l,l(f),i};"undefined"!=typeof exports?exports.loadCSS=b:a.loadCSS=b}("undefined"!=typeof global?global:this);
+;
+!function(a){if(a.loadCSS){var b=loadCSS.relpreload={};if(b.support=function(){try{return a.document.createElement("link").relList.supports("preload")}catch(b){return!1}},b.poly=function(){for(var b=a.document.getElementsByTagName("link"),c=0;c<b.length;c++){var d=b[c];"preload"===d.rel&&"style"===d.getAttribute("as")&&(a.loadCSS(d.href,d,d.getAttribute("media")),d.rel=null)}},!b.support()){b.poly();var c=a.setInterval(b.poly,300);a.addEventListener&&a.addEventListener("load",function(){b.poly(),a.clearInterval(c)}),a.attachEvent&&a.attachEvent("onload",function(){a.clearInterval(c)})}}}(this);
+;
+!function(w, d) {
+  w._noPushState = false;
+  w._noDrawer = false;
+}(window, document);
+</script>
+
+<!--[if gt IE 8]><!---->
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="/site/assets/css/hydejack-8.5.2.css">
+  <link rel="stylesheet" href="/site/assets/icomoon/style.css">
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:400|Noto+Sans:400,400i,700,700i&display=swap">
+  
+
+
+<!--<![endif]-->
+
+
+
+
+</head>
+
+<body class="no-color-transition dark-mode">
+  
+  <div id="_navbar" class="navbar fixed-top">
+  <div class="content">
+    <div class="nav-btn-bar">
+      <span class="sr-only">Jump to:</span>
+      <a id="_menu" class="nav-btn no-hover fl" href="#_navigation">
+        <span class="sr-only">Navigation</span>
+        <span class="icon-menu"></span>
+      </a>
+      <!-- <a id="_search" class="nav-btn no-hover fl" href="#_search">
+        <span class="sr-only">Search</span>
+        <span class="icon-search"></span>
+      </a>
+      <form action="https://duckduckgo.com/" method="GET">
+        <div class="form-group fr">
+          <label class="sr-only" for="_search">Search</label>
+          <input id="_search" name="q" class="form-control" type="search" />
+        </div>
+        <input type="hidden" name="q" value="site:hydejack.com" />
+        <input type="hidden" name="ia" value="web" />
+      </form> -->
+    </div>
+  </div>
+</div>
+<hr class="sr-only" hidden />
+
+
+<hy-push-state
+  replace-ids="_main"
+  link-selector="a[href]:not([href*='/assets/']):not(.external):not(.no-push-state)"
+  duration="250"
+  script-selector="script:not([type^='math/tex'])"
+  prefetch
+>
+  
+    <main
+  id="_main"
+  class="content fade-in layout-project"
+  role="main"
+  data-color="rgb(108,173,222)"
+  data-theme-color="rgb(67,83,106)"
+  
+    data-image="/site/assets/img/sidebar-bg.jpg"
+    data-overlay
+  
+  >
+  
+
+
+
+
+
+<article
+  id="project"
+  class="page"
+  role="article"
+  vocab="http://schema.org/" typeof="CreativeWork" resource="#project"
+  >
+  <header>
+    <h1 class="page-title" property="name">Hyde v2*</h1>
+
+    <p class="post-date heading">
+      
+      
+        <a href="/site/notebooks/" class="flip-title" property="genre">Notebooks</a>
+        |
+      
+
+
+      <time datetime="2014-01-02T00:00:00+09:00">2014</time>
+      
+
+      <span class="fr">
+        <span class="sr-only">| Links:</span>
+        
+          <a class="external" href="http://hyde.getpoole.com" property="sameAs">Demo</a>
+          |
+        
+          <a class="external" href="https://github.com/poole/hyde" property="sameAs">Source</a>
+          
+        
+      </span>
+    </p>
+
+    
+    <div class="img lead sixteen-nine">
+      
+        
+
+
+  <hy-img
+    
+    src="/site/assets/img/projects/hyde-v2@0,25x.jpg"
+    
+    alt="Hyde v2*"
+    srcset="/site/assets/img/projects/hyde-v2.jpg 920w,/site/assets/img/projects/hyde-v2@0,5x.jpg 960w,/site/assets/img/projects/hyde-v2@0,25x.jpg 480w"
+    sizes="(min-width: 90em) 48rem, (min-width: 54em) 42rem, (min-width: 42em) 38rem, 100vw"
+  
+    property="image"
+    root-margin="512px"
+  >
+    <noscript><img data-ignore 
+    src="/site/assets/img/projects/hyde-v2@0,25x.jpg"
+    
+    alt="Hyde v2*"
+    srcset="/site/assets/img/projects/hyde-v2.jpg 920w,/site/assets/img/projects/hyde-v2@0,5x.jpg 960w,/site/assets/img/projects/hyde-v2@0,25x.jpg 480w"
+    sizes="(min-width: 90em) 48rem, (min-width: 54em) 42rem, (min-width: 42em) 38rem, 100vw"
+  /></noscript>
+    <span class="loading" slot="loading" hidden>
+      <span class="icon-cog"></span>
+    </span>
+  </hy-img>
+
+
+      
+    </div>
+
+    
+
+
+
+  
+    <p class="message" property="description">
+      Hyde is a brazen two-column <a href="http://jekyllrb.com">Jekyll</a> theme. It’s based on <a href="http://getpoole.com">Poole</a>, the Jekyll butler.
+
+    </p>
+  
+
+
+    <meta property="disambiguatingDescription" content="Hyde is a brazen two-column Jekyll theme."/>
+  </header>
+
+  <p>Too Short; Want More?</p>
+<h1 id="ユーチューブの動画を使って感情認識を行う長編ノートブック">ユーチューブの動画を使って感情認識を行う長編ノートブック</h1>
+
+<p>筑波大学情報科学類４年スコットアトム <a href="http://atomscott.com/">HP</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/front_cover_tmp.png" alt="あとでかっこいい画像に変える">
+  <noscript><img data-ignore src="./pics/front_cover_tmp.png" alt="あとでかっこいい画像に変える"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<hr />
+
+<p>メインに次のライブラリを使う！</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">sys</span><span class="p">,</span><span class="n">os</span><span class="p">,</span><span class="n">importlib</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">import</span> <span class="nn">dlib</span>
+<span class="kn">import</span> <span class="nn">face_recognition</span><span class="p">,</span> <span class="n">face_alignment</span>
+<span class="kn">import</span> <span class="nn">chainer</span>
+<span class="kn">import</span> <span class="nn">chainercv</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">my_utils</span> <span class="k">as</span> <span class="n">utls</span> <span class="c1"># 自分のコード
+</span></code></pre></div></div>
+
+<hr />
+
+<h2 id="目次">目次</h2>
+
+<h3 id="背景">背景</h3>
+<ul>
+  <li><strong>既存の感情認識の方法</strong>
+    <ul>
+      <li>表情
+        <ul>
+          <li>Face Detection
+            <ul>
+              <li>HOG + linear classifier + image pyramid + sliding window</li>
+              <li>SSD + ResNet10</li>
+              <li>FasterRCNNVGG16のFine Tune</li>
+            </ul>
+          </li>
+          <li>Face Landmark Detection
+            <ul>
+              <li>Ensemble of Regression Trees</li>
+              <li>Hour Glass CNN</li>
+            </ul>
+          </li>
+          <li>Facial Emotion Recognition</li>
+        </ul>
+      </li>
+      <li>声色</li>
+      <li>その他</li>
+    </ul>
+  </li>
+  <li><strong>なぜデータセットを作る必要なのか</strong>
+    <ul>
+      <li>既存のデータセットの概要</li>
+      <li>日本語データセットを作ることの意義</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="データセットの作成">データセットの作成</h3>
+<ul>
+  <li><strong>対象人物の顔の辞書データを作成</strong>
+    <ul>
+      <li>Web Scraping 対象人物の写真を集める　</li>
+      <li>Face Detection + ROI Cropping 写真の中から顔の写真を切り出す</li>
+      <li>Purification 対象人物以外の写真を除外する</li>
+    </ul>
+  </li>
+  <li><strong>対象人物の発話シーケンスを作成</strong>
+    <ul>
+      <li>Web Scraping 対象人物の動画を集める</li>
+      <li>Scene Change Detection 動画をシーンごとに分ける</li>
+      <li>Face Recognition + ROI Cropping 辞書データをもとに対象人物の顔のみを切り出す</li>
+      <li>Active Speaker Verification</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="student---teacher-モデルで音声による感情認識モデルの作成">Student - Teacher モデルで音声による感情認識モデルの作成</h3>
+<ul>
+  <li>
+    <p><strong>実験</strong></p>
+  </li>
+  <li>
+    <p><strong>Ablation Study</strong></p>
+  </li>
+</ul>
+
+<h3 id="作成したモデルの検証">作成したモデルの検証</h3>
+
+<h3 id="ディスカッション応用先の検討">ディスカッション・応用先の検討</h3>
+
+<h3 id="最後に">最後に</h3>
+
+<p><em>論文を書いたので読んでください！</em></p>
+
+<hr />
+
+<h2 id="背景-1">背景</h2>
+
+<h2 id="既存の感情認識の方法">既存の感情認識の方法</h2>
+
+<h3 id="表情を用いた感情認識">表情を用いた感情認識</h3>
+
+<p>人の感情を推定するときは表情が一番参考になる。よって、Facial Expression Recognition(FER)について多くの研究がなされており、様々なFERシステムが存在する。</p>
+
+<p>日本では喜怒哀楽という四字熟語があり、感情を４つのカテゴリに分けることが主流なのかもしない。しかし、表情に関する研究の多くは：</p>
+
+<ul>
+  <li>Anger</li>
+  <li>Disgust</li>
+  <li>Fear</li>
+  <li>Happiness</li>
+  <li>Sadness</li>
+  <li>Suprise</li>
+</ul>
+
+<p>のカテゴリに感情を分けているようだ。</p>
+
+<p>一昔前までは、顔の特徴を記述するモデルとして<a href="https://www.paulekman.com/facial-action-coding-system/">Facial Action Coding System(FACS)</a>が使用されていた。FACSは表情をアクションユニット（AU）と呼ばれる筋肉の動きの個々の要素に分解するモデルで、今でもアニメーションなどに使われているらしい。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Audio</span><span class="p">,</span><span class="n">Image</span><span class="p">,</span> <span class="n">YouTubeVideo</span>
+<span class="n">YouTubeVideo</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">'6RzCWRxnc84'</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</code></pre></div></div>
+
+<iframe width="600" height="300" src="https://www.youtube.com/embed/6RzCWRxnc84" frameborder="0" allowfullscreen=""></iframe>
+
+<p>上にあげた動画に出てくるような理想的な状況下での顔面画像であれば、FACSは有効だが、”In the wild(野生の中で)”と呼ばれる状況、いわゆる普通のありふれた写真の感情認識は非常に難しい。</p>
+
+<p>そもそも普通の写真ではどこに顔があるのかが分からない、あったとしても顔が正面を向いているとは限らないなど、多くの問題がある。</p>
+
+<p>そのため、”In the wild”で表情認識を行う場合はFace Detection(顔認識)やFacial Alignmentと呼ばれる正規化などが前処理として必要になる。さらにFacial Alignmentを行うために顔のパーツ（鼻や目）を認識するFacial Landmark Detectionも行わなければならない。本当に大変である。</p>
+
+<p>これらのハードルを乗り越えるために、近年ではCNNを用いたディープラーニングを用いた主流がメインになっている。それぞれについて詳細に説明すると本がかけしまうので、ここでは</p>
+
+<ul>
+  <li>Face Detection</li>
+  <li>Facial Landmark Detection</li>
+</ul>
+
+<p>について、それぞれ一つのデータセットですぐに使えるモデルでどれだけの精度がでるのかを検証する。</p>
+
+<hr />
+
+<h4 id="face-detection"><strong>Face Detection</strong></h4>
+
+<p>検証用データセット : <a href="http://shuoyang1213.me/WIDERFACE/WiderFace_Results.html">WIDER FACE</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/wider.jpg" alt="">
+  <noscript><img data-ignore src="./pics/wider.jpg" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>WIDER FACEについて</p>
+<blockquote>
+  <p>WIDER FACE dataset is a face detection benchmark dataset, of which images are selected from the publicly available WIDER dataset. We choose 32,203 images and label 393,703 faces with a high degree of variability in scale, pose and occlusion as depicted in the sample images.</p>
+</blockquote>
+
+<p>3万2203枚の画像・39万3703面の顔が含まれている。
+（そう、このノートブックはガチなんやで）</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'./datasets/Wider_Face/'</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">wider_face_dataset</span> <span class="kn">import</span> <span class="n">WIDERFACEDataset</span>
+
+<span class="c1"># Wider FaceのValidation用のデータ用意する
+</span><span class="n">data_path</span> <span class="o">=</span> <span class="s">'./datasets/Wider_Face/WIDER_val'</span>
+<span class="n">label_path</span> <span class="o">=</span> <span class="s">'./datasets/Wider_Face/wider_face_split/wider_face_val.mat'</span>
+<span class="n">wider_face</span> <span class="o">=</span> <span class="n">WIDERFACEDataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">label_path</span><span class="p">)</span>
+
+<span class="c1"># BBOX付きの写真は下のような感じ
+</span><span class="n">img</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">wider_face</span><span class="o">.</span><span class="n">get_example</span><span class="p">(</span><span class="mi">320</span><span class="p">)</span>
+<span class="n">chainercv</span><span class="o">.</span><span class="n">visualizations</span><span class="o">.</span><span class="n">vis_bbox</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">'off'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_7_0.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_7_0.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>評価指標：Intersection over Union (IoU)に基づく「検出領域とアノテーション領域の交差の比率が0.5より大きい場合、スコアは１、それ以外の場合のスコアは0」という評価指標を用いる。</p>
+
+<p>IoUの直感的なイメージ(<a href="https://www.pyimagesearch.com/2016/11/07/intersection-over-union-iou-for-object-detection/">src</a>)</p>
+
+<p><hy-img root-margin="512px" src="./pics/iou.png" alt="">
+  <noscript><img data-ignore src="./pics/iou.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">wrong_bbox</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">100.</span><span class="p">,</span> <span class="mf">535.</span><span class="p">,</span> <span class="mf">560.</span><span class="p">,</span> <span class="mf">1000.</span><span class="p">]]</span> <span class="c1">#自分でテキトーにBBOXを作る [y1, x1, y2, x2]
+</span><span class="n">iou_score</span> <span class="o">=</span> <span class="n">utls</span><span class="o">.</span><span class="n">get_iou</span><span class="p">(</span><span class="n">wrong_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bboxes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">#IoUスコアを計算する
+</span>
+<span class="n">chainercv</span><span class="o">.</span><span class="n">visualizations</span><span class="o">.</span><span class="n">vis_bbox</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bboxes</span><span class="p">,</span> <span class="n">wrong_bbox</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label_names</span><span class="o">=</span><span class="p">[</span><span class="s">'GT'</span><span class="p">,</span> <span class="s">'Wrong'</span><span class="p">])</span> 
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">'IoU = {:.3f}'</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">iou_score</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">'off'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_9_0.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_9_0.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>使用する顔認識のモデルは次の３つである。いずれも手軽ですぐにOut of the Boxで使えることを意識した。</p>
+
+<ul>
+  <li>HOG Based</li>
+  <li>CNN Based</li>
+  <li>FasterRCNNVGG16のFine Tune (<a href="https://chainercv.readthedocs.io/en/stable/reference/links/faster_rcnn.html">FasterRCNNVGG16</a>, <a href="https://www.kaggle.com/mksaad/wider-face-a-face-detection-benchmark/version/4#WIDER_val.zip">src</a>)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'./models/FasterRCNNVGG16_face_recognition/'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">FasterRCNNVGG16_face_recognition</span>
+
+<span class="n">sample_img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span> <span class="c1">#face_recognition用に配列順とtypeを変更
+</span>
+<span class="c1"># HOG base &amp; CNN baseのモデルface_recognitionモジュールからすぐに利用可能
+</span><span class="n">HOG_out</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span><span class="n">sample_img</span><span class="p">,</span> <span class="n">number_of_times_to_upsample</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># HOG baseの出力
+</span><span class="n">CNN_out</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span><span class="n">sample_img</span><span class="p">,</span> <span class="n">number_of_times_to_upsample</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">"cnn"</span><span class="p">)</span> <span class="c1"># CNN baseの出力
+</span>
+<span class="c1"># FasterRCNNVGG16ベースのモデルはモデルをダウンロードする必要がある
+# その分面倒だが、chainerCVが使えてAIエンジニアっぽい！笑
+</span><span class="n">TRAINED_MODEL</span> <span class="o">=</span> <span class="s">'./models/FasterRCNNVGG16_face_recognition/snapshot_model_20180404.npz'</span>
+
+<span class="n">FRCNN_model</span> <span class="o">=</span> <span class="n">FasterRCNNVGG16_face_recognition</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">TRAINED_MODEL</span><span class="p">)</span>
+<span class="c1"># GPUを使わないといけないとMemory Errorになる可能性大！
+</span><span class="n">FRCNN_out</span> <span class="o">=</span> <span class="n">FRCNN_model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">img</span><span class="p">])</span>
+
+<span class="c1"># サンプル出力
+</span><span class="n">utls</span><span class="o">.</span><span class="n">compare_bbox_images</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">HOG_out</span><span class="p">,</span> <span class="n">CNN_out</span><span class="p">,</span> <span class="n">FRCNN_out</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_11_0.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_11_0.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>GPUを使うといかにスピードアップするか知っとくといい気がするので、一度だけ比較実験しましょうか。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># CPU Speed
+</span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">FRCNN_model</span><span class="o">.</span><span class="n">to_cpu</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">FRCNN_model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">img</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"CPU inference took: {:.3f} secs"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">s</span><span class="p">))</span>
+
+<span class="c1"># GPU Speed 
+</span><span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">FRCNN_model</span><span class="o">.</span><span class="n">to_gpu</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">FRCNN_model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">img</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"GPU inference took: {:.3f} secs"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">s</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CPU inference took: 10.701 secs
+GPU inference took: 6.040 secs
+</code></pre></div></div>
+
+<h5 id="モデル比較">モデル比較</h5>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test_iter</span> <span class="o">=</span> <span class="n">chainer</span><span class="o">.</span><span class="n">iterators</span><span class="o">.</span><span class="n">SerialIterator</span><span class="p">(</span><span class="n">wider_face</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">repeat</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="n">total_faces</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">HOG_score</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">CNN_score</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">FRCNN_score</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">test_batch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">test_iter</span><span class="p">):</span>
+    <span class="n">test_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_batch</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">test_bboxes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">test_batch</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="n">HOG_in</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)]</span>
+    <span class="n">HOG_out</span> <span class="o">=</span> <span class="p">[</span><span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">number_of_times_to_upsample</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">HOG_in</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">CNN_in</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)]</span>
+    <span class="n">CNN_out</span> <span class="o">=</span> <span class="p">[</span><span class="n">face_recognition</span><span class="o">.</span><span class="n">face_locations</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">number_of_times_to_upsample</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s">"cnn"</span><span class="p">)</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">CNN_in</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># CNN baseの出力
+</span>    
+    <span class="n">FRCNN_in</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_img</span><span class="p">]</span>
+    <span class="n">_FRCNN_out</span> <span class="o">=</span> <span class="n">FRCNN_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">FRCNN_in</span><span class="p">)</span>
+    <span class="n">FRCNN_out</span> <span class="o">=</span> <span class="n">_FRCNN_out</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'int'</span><span class="p">)</span><span class="c1"># 整形必要
+</span>    
+    <span class="n">total_faces</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_bboxes</span><span class="p">)</span> <span class="c1"># Number of real faces
+</span>    <span class="n">HOG_score</span> <span class="o">+=</span> <span class="n">utls</span><span class="o">.</span><span class="n">score_face_detection</span><span class="p">(</span><span class="n">HOG_out</span><span class="p">,</span> <span class="n">test_bboxes</span><span class="p">)</span> <span class="c1"># Number of faces from HOG
+</span>    <span class="n">CNN_score</span> <span class="o">+=</span> <span class="n">utls</span><span class="o">.</span><span class="n">score_face_detection</span><span class="p">(</span><span class="n">CNN_out</span><span class="p">,</span> <span class="n">test_bboxes</span><span class="p">)</span> <span class="c1"># Number of faces from CNN
+</span>    <span class="n">FRCNN_score</span> <span class="o">+=</span> <span class="n">utls</span><span class="o">.</span><span class="n">score_face_detection</span><span class="p">(</span><span class="n">FRCNN_out</span><span class="p">,</span> <span class="n">test_bboxes</span><span class="p">)</span> <span class="c1"># Number of faces from FRCNN
+</span>    
+    <span class="k">if</span> <span class="n">index</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"[ITERATION {0}] HOG: {1}, CNN: {2}, FRCNN: {3}, GT: {4}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">HOG_out</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">CNN_out</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">FRCNN_out</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_bboxes</span><span class="p">)))</span>
+        <span class="n">utls</span><span class="o">.</span><span class="n">compare_bbox_images</span><span class="p">(</span><span class="n">test_img</span><span class="p">,</span> <span class="n">HOG_out</span><span class="p">,</span> <span class="n">CNN_out</span><span class="p">,</span> <span class="n">_FRCNN_out</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">50</span><span class="p">:</span>
+        <span class="k">break</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"[FINAL] HOG: {0:.0</span><span class="si">%</span><span class="s">}, CNN: {1:.0</span><span class="si">%</span><span class="s">}, FRCNN: {2:.0</span><span class="si">%</span><span class="s">}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">HOG_score</span><span class="o">/</span><span class="n">total_faces</span><span class="p">,</span> <span class="n">CNN_score</span><span class="o">/</span><span class="n">total_faces</span><span class="p">,</span> <span class="n">FRCNN_score</span><span class="o">/</span><span class="n">total_faces</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 0] HOG: 1, CNN: 1, FRCNN: 1, GT: 1
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_1.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_1.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 10] HOG: 0, CNN: 1, FRCNN: 4, GT: 3
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_3.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_3.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 20] HOG: 1, CNN: 1, FRCNN: 1, GT: 1
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_5.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_5.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 30] HOG: 0, CNN: 1, FRCNN: 5, GT: 8
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_7.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_7.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 40] HOG: 1, CNN: 1, FRCNN: 2, GT: 3
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_9.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_9.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ITERATION 50] HOG: 1, CNN: 2, FRCNN: 2, GT: 2
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_15_11.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_15_11.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[FINAL] HOG: 0%, CNN: 0%, FRCNN: 45%
+</code></pre></div></div>
+
+<p>結果より、Wider Faceデータセットには群衆の写真など、顔認識を行うことが非常に難しいのが分かる。</p>
+
+<p>Wider Faceデータセットを活用した、<a href="http://wider-challenge.org/2019.html">Wider Challenge</a>というコンペが毎年、開催されており、2位になった[Insight Face](https://github.com/deepinsight/insightface_はFace DetectionとFacial Landmark Detectionの両方に関してState of the Artになっている。</p>
+
+<p>手が回っていないが、ぜひいずれ実装したいと考えている。</p>
+
+<hr />
+
+<h4 id="facial-landmark-detection">Facial Landmark Detection</h4>
+<p>検証用データセット：<a href="https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/">iBUG 300-W</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/ibug.png" alt="">
+  <noscript><img data-ignore src="./pics/ibug.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+
+(Fig 1.)</p>
+
+<p>iBUG 300-Wについて</p>
+<blockquote>
+  <p>The datasets LFPW, AFW, HELEN, and XM2VTS have been re-annotated using the mark-up of Fig 1. We provide additional annotations for another 135 images in difficult poses and expressions (IBUG training set). Annotations have the same name as the corresponding images.</p>
+</blockquote>
+
+<p>2万8827枚の写真に写っている顔に１面につき68点のラベルがアノテーションされている。</p>
+
+<p>評価指標：目の端から端までの距離で顔の大きさを正規化してからの各点のユークリッド距離の平均</p>
+
+<p>使用するモデル：</p>
+
+<ul>
+  <li>One Millisecond Face Alignment with an Ensemble of Regression Trees by Vahid Kazemi and Josephine Sullivan (<a href="https://www.semanticscholar.org/paper/One-millisecond-face-alignment-with-an-ensemble-of-Kazemi-Sullivan/1824b1ccace464ba275ccc86619feaa89018c0ad">paper</a> <a href="http://blog.dlib.net/2014/08/real-time-face-pose-estimation.html">src</a>)</li>
+  <li>
+    <s>Stacked Hourglass Network for Robust Facial Landmark Localisation ([paper](http://openaccess.thecvf.com/content_cvpr_2017_workshops/w33/papers/Yang_Stacked_Hourglass_Network_CVPR_2017_paper.pdf) [src]())</s>
+    <p>いずれ実装したい</p>
+  </li>
+  <li>How far are we from solving the 2D \&amp; 3D Face Alignment problem by Adrian Bulat and Georgios Tzimiropoulos <a href="https://arxiv.org/abs/1703.07332">paper</a> <a href="https://github.com/1adrianb/face-alignment">src</a></li>
+</ul>
+
+<p>Bulat氏のモデルを使えば、off-the-shelfで3Dランドマークがすぐに手に入る！</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'./datasets/IBUG-300W/'</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ibug_300w</span> <span class="kn">import</span> <span class="n">KeypointDataset</span>
+<span class="n">importlib</span><span class="o">.</span><span class="nb">reload</span><span class="p">(</span><span class="n">utls</span><span class="p">)</span>
+
+<span class="n">data_path</span> <span class="o">=</span> <span class="s">'../../chainer-facial-hourglass/datasets/IBUG_300_W/*/*.png'</span>
+<span class="n">label_path</span> <span class="o">=</span> <span class="s">'../../chainer-facial-hourglass/datasets/IBUG_300_W/*/*.pts'</span>
+<span class="n">ibug_dataset</span> <span class="o">=</span> <span class="n">KeypointDataset</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">label_path</span><span class="p">,</span> <span class="s">'keypoints'</span><span class="p">)</span>
+
+<span class="n">img</span><span class="p">,</span> <span class="n">pts</span> <span class="o">=</span> <span class="n">ibug_dataset</span><span class="o">.</span><span class="n">get_example</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="c1"># Get sample from dataset
+</span><span class="n">bboxes</span> <span class="o">=</span> <span class="n">FRCNN_model</span><span class="o">.</span><span class="n">predict</span><span class="p">([</span><span class="n">img</span><span class="p">])[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'int'</span><span class="p">)</span> <span class="c1"># predict bboxes
+</span>
+<span class="n">_bbox_img</span> <span class="o">=</span> <span class="n">utls</span><span class="o">.</span><span class="n">crop_bbox</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)</span> <span class="c1"># Crop to bbox
+</span><span class="n">bbox_img</span> <span class="o">=</span> <span class="n">_bbox_img</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">'uint8'</span><span class="p">)</span>
+
+<span class="c1"># Ensemble of Regression Trees 
+</span><span class="n">ERT_out</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_landmarks</span><span class="p">(</span><span class="n">bbox_img</span><span class="p">)</span>
+
+<span class="c1"># 出力が辞書のリストなので、それを整形する
+</span><span class="n">ERT_out</span> <span class="o">=</span> <span class="n">utls</span><span class="o">.</span><span class="n">unravel_list_dict</span><span class="p">(</span><span class="n">ERT_out</span><span class="p">)</span>
+<span class="n">ERT_out</span> <span class="o">=</span> <span class="n">ERT_out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ERT_out</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Hourglass Model 
+# 2d
+</span><span class="n">HG2d</span> <span class="o">=</span> <span class="n">face_alignment</span><span class="o">.</span><span class="n">FaceAlignment</span><span class="p">(</span><span class="n">face_alignment</span><span class="o">.</span><span class="n">LandmarksType</span><span class="o">.</span><span class="n">_2D</span><span class="p">,</span> <span class="n">flip_input</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">HG2d_out</span> <span class="o">=</span> <span class="n">HG2d</span><span class="o">.</span><span class="n">get_landmarks</span><span class="p">(</span><span class="n">bbox_img</span><span class="p">)</span>
+
+<span class="c1"># 3d
+</span><span class="n">HG3d</span> <span class="o">=</span> <span class="n">face_alignment</span><span class="o">.</span><span class="n">FaceAlignment</span><span class="p">(</span><span class="n">face_alignment</span><span class="o">.</span><span class="n">LandmarksType</span><span class="o">.</span><span class="n">_3D</span><span class="p">,</span> <span class="n">flip_input</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">HG3d_out</span> <span class="o">=</span> <span class="n">HG3d</span><span class="o">.</span><span class="n">get_landmarks</span><span class="p">(</span><span class="n">bbox_img</span><span class="p">)</span>
+
+<span class="c1"># viz
+</span><span class="n">utls</span><span class="o">.</span><span class="n">compare_landmark_images</span><span class="p">(</span><span class="n">_bbox_img</span><span class="p">,</span> <span class="p">[</span><span class="n">ERT_out</span><span class="p">],</span> <span class="n">HG2d_out</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span> 
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="s">'3d'</span><span class="p">)</span>
+<span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">HG3d_out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">zs</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'rainbow'</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s">'o'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s">"HG 3D"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_18_0.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_18_0.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p><hy-img root-margin="512px" src="TSWM_files/TSWM_18_1.png" alt="png">
+  <noscript><img data-ignore src="TSWM_files/TSWM_18_1.png" alt="png"/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<h5 id="モデル比較-1">モデル比較</h5>
+
+<p>(出力が異なるの一旦スキップ)</p>
+
+<hr />
+
+<h4 id="facial-emotion-recognition">Facial Emotion Recognition</h4>
+
+<p>Face DetectionとFacial Landmark Recognitionについて手軽なモデルを使ってどれくらいの精度が出るのかを理解したところで、次に表情認識についてより詳しく見てみよう。</p>
+
+<p>以下が表情認識の一般的な流れだ。
+<hy-img root-margin="512px" src="./pics/face_pipeline.png" alt="">
+  <noscript><img data-ignore src="./pics/face_pipeline.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>表情認識には大きく分けて２つのタイプがある。</p>
+
+<ul>
+  <li>Static Facial Emotion Recognition (画像に対して表情認識を行う)
+    <ul>
+      <li>Off-shelf-model Emopy</li>
+    </ul>
+  </li>
+  <li>Dynamic Facial Emotion Recognition
+    <ul>
+      <li>動画に対して表情認識を行う。　</li>
+    </ul>
+  </li>
+</ul>
+
+<p>画像一枚に対して一つの感情を予測するStatic FERの方が、タスクとしてより簡単であること…</p>
+
+<h4 id="static-facial-emotion-recognition"><strong>Static Facial Emotion Recognition</strong></h4>
+<p>トレーンにFER Databaseの一部、テストにFER Databaseの一部とJapanese Female Facial Expression (JAFFE) Databaseを使います。
+※両方を使って、テストが行えるように整形した箇所がいくつかあるので、リンクからダウンロードできるデータセットとは多少異なるところがあるかと思います。
+主に、</p>
+
+<ul>
+  <li>画像サイズを統一する</li>
+  <li>ラベルを統一する</li>
+</ul>
+
+<p>ということを行いました。そのため、注意が必要です。</p>
+
+<p>検証用データセット①: <a href="https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data">FER</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/fer.png" alt="">
+  <noscript><img data-ignore src="./pics/fer.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>Microsoft FER+について</p>
+<blockquote>
+  <p>The data consists of 48x48 pixel grayscale images of faces. The faces have been automatically registered so that the face is more or less centered and occupies about the same amount of space in each image. The task is to categorize each face based on the emotion shown in the facial expression in to one of seven categories (0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral).</p>
+</blockquote>
+
+<p>検証用データセット②: <a href="https://zenodo.org/record/3451524#.XZQfPuYzZph">JAFFE</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/jaffe.jpg" alt="">
+  <noscript><img data-ignore src="./pics/jaffe.jpg" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<p>JAFFEについて</p>
+<blockquote>
+  <p>The database contains 213 images of 7 facial expressions (6 basic facial expressions + 1 neutral) posed by 10 Japanese female models. Each image has been rated on 6 emotion adjectives by 60 Japanese subjects. Images are 256x256 gray level, in .tiff format, with no compression.</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Train a classifier here!
+</span></code></pre></div></div>
+
+<h4 id="dynamic-facial-emotion-recognition"><strong>Dynamic Facial Emotion Recognition</strong></h4>
+
+<p>一般的に時間軸方向の情報を含んだDynamic=ビデオでの表情認識はStatic=画像での表情認識よりはるかに難易度が高い。しかし、最近のディープラーニングのおかげで研究も進み、良さげなデータセットも増えてきた。ここでも２つのデータセット<a href="https://mug.ee.auth.gr/fed/">MUG Facial Expression Database</a>と<a href="http://www.consortium.ri.cmu.edu/ckagree/">CK+</a>を使う。</p>
+
+<p>検証用データセット① <a href="https://mug.ee.auth.gr/fed/">MUG Facial Expression Database</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/mug.png" alt="">
+  <noscript><img data-ignore src="./pics/mug.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<blockquote>
+  <p>The images of 52 subjects are available to authorized internet users. The data that can be accessed amounts to 38GB. Twenty five subjects are available upon request and the rest 9 subjects are available only in the MUG laboratory. There are two parts in the database. In the first part the subjects were asked to perform the six basic expressions, which are anger, disgust, fear, happiness, sadness, surprise. The second part contains laboratory induced emotions.</p>
+</blockquote>
+
+<p>検証用データセット② <a href="http://www.consortium.ri.cmu.edu/ckagree/">CK+</a></p>
+
+<p><hy-img root-margin="512px" src="./pics/ck.png" alt="">
+  <noscript><img data-ignore src="./pics/ck.png" alt=""/></noscript>
+  <span slot="loading" class="loading"><span class="icon-cog"></span></span>
+</hy-img>
+</p>
+
+<blockquote>
+  <p>Version 1, the initial release, includes 486 sequences from 97 posers. Each sequence begins with a neutral expression and proceeds to a peak expression.Version 2, referred to as CK+, includes both posed and non-posed (spontaneous) expressions and additional types of metadata.</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Do tests and stuff
+</span></code></pre></div></div>
+
+<hr />
+
+<h3 id="声色を用いた感情認識">声色を用いた感情認識</h3>
+
+<p>表情を用いた感情認識Facial Emotion RecognitionがFERと略されるのであれば、声色を用いた感情分析はどうなるのか？答えはSpeech Emotion Recognition, SERである。</p>
+
+<ul>
+  <li>VGG-M <a href="https://arxiv.org/pdf/1405.3531.pdf">paper</a></li>
+  <li>SoundNet <a href="http://soundnet.csail.mit.edu/">paper</a></li>
+  <li>Deep Spectrum <a href="https://pdfs.semanticscholar.org/4bd0/f5bddf31961361cc5b16cca991e5c6aa8f5c.pdf">paper</a></li>
+  <li>Conv Lstm with Attention <a href="https://pdfs.semanticscholar.org/c0f8/32808efa220dc64cf3dc5ed3aff4737484b5.pdf">paper</a></li>
+</ul>
+
+<hr />
+
+<h3 id="マルチモーダル">マルチモーダル</h3>
+
+<hr />
+
+<h3 id="転移学習">転移学習</h3>
+
+<hr />
+
+<h2 id="なぜデータセットを作る必要なのか">なぜデータセットを作る必要なのか</h2>
+
+<h3 id="既存のデータセットの概要">既存のデータセットの概要</h3>
+
+<h3 id="日本語データセットを作ることの意義">日本語データセットを作ることの意義</h3>
+
+<hr />
+
+<hr />
+
+<h1 id="データセットの作成-1">データセットの作成</h1>
+
+<h2 id="対象人物の顔の辞書データを作成">対象人物の顔の辞書データを作成</h2>
+
+<h3 id="web-scraping-対象人物の写真を集める">Web Scraping 対象人物の写真を集める　</h3>
+
+<h3 id="face-detection--roi-cropping-写真の中から顔の写真を切り出す">Face Detection + ROI Cropping 写真の中から顔の写真を切り出す</h3>
+
+<h3 id="purification-対象人物以外の写真を除外する">Purification 対象人物以外の写真を除外する</h3>
+
+<h2 id="対象人物の発話シーケンスを作成">対象人物の発話シーケンスを作成</h2>
+
+<h3 id="web-scraping-対象人物の動画を集める">Web Scraping 対象人物の動画を集める</h3>
+
+<h3 id="scene-change-detection-動画をシーンごとに分ける">Scene Change Detection 動画をシーンごとに分ける</h3>
+
+<h3 id="face-recognition--roi-cropping-辞書データをもとに対象人物の顔のみを切り出す">Face Recognition + ROI Cropping 辞書データをもとに対象人物の顔のみを切り出す</h3>
+
+<h3 id="active-speaker-verification">Active Speaker Verification</h3>
+
+<hr />
+
+<hr />
+
+<h1 id="student---teacher-モデルで音声による感情認識モデルの作成-1">Student - Teacher モデルで音声による感情認識モデルの作成</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+</article>
+
+<hr class="dingbat related" />
+
+
+
+
+  
+     
+
+
+  <aside class="about related mt4 mb4" role="complementary">
+    
+    
+
+<div class="author mt4">
+  
+
+  
+    
+
+
+  <hy-img
+    
+    src="/site/assets/img/profile.jpg"
+    class="avatar"
+    alt="Atom Scott"
+    
+    
+  
+    
+    root-margin="512px"
+  >
+    <noscript><img data-ignore 
+    src="/site/assets/img/profile.jpg"
+    class="avatar"
+    alt="Atom Scott"
+    
+    
+  /></noscript>
+    <span class="loading" slot="loading" hidden>
+      <span class="icon-cog"></span>
+    </span>
+  </hy-img>
+
+
+  
+
+  
+  
+  <h2  class="page-title hr">
+    About
+  </h2>
+
+  <p>Doing computer vision/reinforcement learning in human interactive areas, my favourite is sports.</p>
+
+
+  <div class="sidebar-social">
+    <span class="sr-only">Social:</span>
+<ul>
+  
+    
+      
+
+
+
+  
+
+  
+  
+  
+  
+
+  
+
+  
+
+  <li>
+    <a href="https://twitter.com/AtomJamesScott" title="Twitter" class="no-mark-external">
+      <span class="icon-twitter"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  </li>
+
+
+    
+      
+
+
+
+  
+
+  
+  
+  
+  
+
+  
+
+  
+
+  <li>
+    <a href="https://github.com/atomscott" title="GitHub" class="no-mark-external">
+      <span class="icon-github"></span>
+      <span class="sr-only">GitHub</span>
+    </a>
+  </li>
+
+
+    
+  
+</ul>
+
+  </div>
+</div>
+
+  </aside>
+
+
+  
+
+  
+    
+
+
+
+
+  
+
+  
+    
+
+
+
+
+  
+
+
+  
+
+  
+<footer role="contentinfo">
+  <hr/>
+  
+    <p><small class="copyright">© 2019. All rights reserved.
+</small></p>
+  
+  
+  
+  <hr class="sr-only"/>
+</footer>
+
+
+</main>
+
+    <hy-drawer
+  class=""
+  align="left"
+  threshold="10"
+  touch-events
+  prevent-default
+>
+  <header id="_sidebar" class="sidebar" role="banner">
+    
+    <div class="sidebar-bg sidebar-overlay" style="background-color:rgb(67,83,106);background-image:url(/site/assets/img/sidebar-bg.jpg)"></div>
+
+    <div class="sidebar-sticky">
+      <div class="sidebar-about">
+        
+          <a class="no-hover" href="/site/" tabindex="-1">
+            <img src="/site/assets/icons/icon.png" class="avatar" alt="Japanese Audio Emotion Recognition" data-ignore />
+          </a>
+        
+        <h2 class="h1"><a href="/site/">Japanese Audio Emotion Recognition</a></h2>
+        
+        
+          <p class="">
+            Deep learning emotion recognition with Japanese audio-video.
+
+          </p>
+        
+      </div>
+
+      <nav class="sidebar-nav heading" role="navigation">
+        <span class="sr-only">Navigation:</span>
+<ul>
+  
+    
+      
+      <li>
+        <a
+          id="_navigation"
+          href="/site/"
+          class="sidebar-nav-item active"
+          
+        >
+          About
+        </a>
+      </li>
+    
+      
+      <li>
+        <a
+          
+          href="/site/notebooks/"
+          class="sidebar-nav-item active"
+          
+        >
+          Notebooks
+        </a>
+      </li>
+    
+      
+      <li>
+        <a
+          
+          href="/site/docs/"
+          class="sidebar-nav-item"
+          
+        >
+          Documentation
+        </a>
+      </li>
+    
+  
+</ul>
+
+      </nav>
+
+      
+
+      <div class="sidebar-social">
+        <span class="sr-only">Social:</span>
+<ul>
+  
+    
+      
+
+
+
+  
+
+  
+  
+  
+  
+
+  
+
+  
+
+  <li>
+    <a href="https://twitter.com/AtomJamesScott" title="Twitter" class="no-mark-external">
+      <span class="icon-twitter"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  </li>
+
+
+    
+      
+
+
+
+  
+
+  
+  
+  
+  
+
+  
+
+  
+
+  <li>
+    <a href="https://github.com/atomscott" title="GitHub" class="no-mark-external">
+      <span class="icon-github"></span>
+      <span class="sr-only">GitHub</span>
+    </a>
+  </li>
+
+
+    
+  
+</ul>
+
+      </div>
+    </div>
+  </header>
+</hy-drawer>
+<hr class="sr-only" hidden />
+
+  
+</hy-push-state>
+
+<!--[if gt IE 10]><!---->
+
+  <script nomodule>!function(){var e=document.createElement("script");if(!("noModule"in e)&&"onbeforeload"in e){var t=!1;document.addEventListener("beforeload",function(n){if(n.target===e)t=!0;else if(!n.target.hasAttribute("nomodule")||!t)return;n.preventDefault()},!0),e.type="module",e.src=".",document.head.appendChild(e),e.remove()}}();
+</script>
+  <script type="module" src="/site/assets/js/hydejack-8.5.2.js"></script>
+  <script nomodule src="/site/assets/js/hydejack-legacy-8.5.2.js" defer></script>
+  
+
+  
+
+  <script type="module">
+    if ('serviceWorker' in navigator) {
+      /**/
+      navigator.serviceWorker.getRegistration()
+        .then(r => r.unregister())
+        .catch(() => {});
+      /**/
+    }
+  </script>
+
+<!--<![endif]-->
+
+
+
+
+<h2 class="sr-only" hidden>Templates (for web app):</h2>
+
+<template id="_animation-template" hidden>
+  <div class="animation-main fixed-top">
+    <div class="content">
+      <div class="page"></div>
+    </div>
+  </div>
+</template>
+
+<template id="_loading-template" hidden>
+  <div class="loading nav-btn fr">
+    <span class="sr-only">Loading…</span>
+    <span class="icon-cog"></span>
+  </div>
+</template>
+
+<template id="_error-template" hidden>
+  <div class="page">
+    <h1 class="page-title">Error</h1>
+    
+    
+    <p class="lead">
+      Sorry, an error occurred while loading <a class="this-link" href=""></a>.
+
+    </p>
+  </div>
+</template>
+
+<template id="_forward-template" hidden>
+  <button id="_forward" class="forward nav-btn no-hover fl">
+    <span class="sr-only">Forward</span>
+    <span class="icon-arrow-right2"></span>
+  </button>
+</template>
+
+<template id="_back-template" hidden>
+  <button id="_back" class="back nav-btn no-hover fl">
+    <span class="sr-only">Back</span>
+    <span class="icon-arrow-left2"></span>
+  </button>
+</template>
+
+<template id="_permalink-template" hidden>
+  <a href="#" class="permalink">
+    <span class="sr-only">Permalink</span>
+    <span class="icon-link"></span>
+  </a>
+</template>
+
+
+
+
+
+</body>
+</html>
