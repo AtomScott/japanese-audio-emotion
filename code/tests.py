@@ -1,4 +1,4 @@
-from logger import create_logger
+from code.logger import create_logger
 
 
 class Tester():
