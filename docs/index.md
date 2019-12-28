@@ -18,17 +18,16 @@ more_posts: docs.md
 
 This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac.jp/) from University of Tsukuba.
 
-![](./assets/images/xperlab.jpg)
+Current progress can be viewed at [this glo board](https://app.gitkraken.com/glo/board/XgczGHieeQAQ6Kmz). I'm working on other projects at the same time so don't expect fast and frequent development.
 
+# Deep learning emotion recognition with Japanese audio
 
-## ToDo
-
-- assetsの整理
+* TOC
+{:toc}
 
 ## Contributions
 
 - A large dataset of short speech videos of Japanese personel. These were collected from YouTube.
-
 - Emotion recognition on Japanese audio
 
 ## Dependencies
@@ -79,6 +78,10 @@ python tools/train.py \
 <!--projects-->
 
 ## 研究室向け
+
+### Configuration
+
+Run `source ./scripts/configure.sh` to set up the enviroment.
 
 ### dlib
 dlibはは既にインストールされているので`pip install dlib`ではインストールせずに、以下を実行してください。
