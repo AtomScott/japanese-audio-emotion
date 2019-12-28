@@ -1,6 +1,6 @@
-from arguments import parse_args
-from logger import create_logger
-from tests import Tester
+from code.arguments import parse_args
+from code.logger import create_logger
+from code.tests import Tester
 
 from google_images_download import google_images_download
 import os
