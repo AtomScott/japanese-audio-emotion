@@ -28,9 +28,14 @@ def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedr
     """Downloads face images for a query.
     
     Arguments:
-        query {str} -- Query to download images for.
-        n_images {int} -- Number of images to download.
-        out_dir_path {str} -- Output path for images.
+        query : str
+            Query to download images for.
+        n_images : int
+            Number of images to download.
+        out_dir_path : str
+            Output path for images.
+        chromedriver_path : str
+            Path to chromedriver
     
     Keyword Arguments:
         chromedriver_path {str} -- Path to chromedriver (default: {"./chromedriver"})
@@ -213,7 +218,6 @@ if __name__ =="__main__":
 
         # get start time and end times
         for i, im in tqdm(enumerate(vid)):
-            1+1
             # logger.info('Mean of frame {0} is {1}, {2}, {3}'.format(i, im.mean(), type(im), im.shape))
 
             # TODO: face detection

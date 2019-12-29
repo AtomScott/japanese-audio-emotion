@@ -20,8 +20,6 @@ This is a project done with [XperLab](https://www.xpercept.aclab.esys.tsukuba.ac
 
 Current progress can be viewed at [this glo board](https://app.gitkraken.com/glo/board/XgczGHieeQAQ6Kmz). I'm working on other projects at the same time so don't expect fast and frequent development.
 
-# Deep learning emotion recognition with Japanese audio
-
 * TOC
 {:toc}
 

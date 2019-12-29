@@ -6,6 +6,9 @@ from inspect import getmembers, isfunction, isclass
 from pkgutil import walk_packages
 import re
 
+import warnings
+warnings.filterwarnings("ignore")
+
 def get_package_contents(package_list):
     """A function to find paths to modules
     
@@ -43,17 +46,17 @@ def write_mod_doc(mod, f):
     f.write('\n'.join([ \
         '---',
         'layout: post',
-        f'title: {mod.__name__}',
+        'title: {0}'.format(mod.__name__),
         'description: >',
         ' '+short_desc,
         '---', '\n']))
 
-    f.write('# ' + f'{mod.__name__}' + '\n')
+    f.write('# ' +  '{0}'.format(mod.__name__) + '\n')
 
     if short_desc != ' ':
         f.write('\n'.join([
             '## Description', 
-            f'{mod.__doc__}']))
+            '{0}'.format(mod.__doc__)]))
 
     f.write('---\n')
 
@@ -63,7 +66,7 @@ def generate_text(key, item):
         match = re.match(r"(.*)\((.*)\)" ,item)
         if match:
             na, so = match.groups()
-            return f'#### **{name}(** *{so}*  **)** {{#signature}}\n'
+            return '#### **{0}(** *{1}*  **)** {{#signature}}\n'.format(name, so)
         else:
             return '\n'
 
@@ -89,21 +92,21 @@ def generate_text(key, item):
         return sep.join(item)
 
     def parse_section(key, item):
-        s = [f'##### {key} {{#section}}\n', '<dl>']
+        s = ['##### {0} {{#section}}\n'.format(key), '<dl>']
         for p in item: 
-            s.append('<dt markdown=\'1\'>' + f'`{p.name if p.name else " "}` : *{p.type}*' + '\n</dt>')
+            s.append('<dt markdown=\'1\'>' + '`{0}` : *{1}*'.format(p.name if p.name else " ", p.type) + '\n</dt>')
             s += ["\t<dd markdown=\'1\'> {0} \n</dd>\n".format(''.join(p.desc))]
         s.append('</dl>')
         s.append('')
         return '\n'.join(s)
 
     def parse_block(key, item):
-        s = [f'##### {key} {{#block-header}}']
+        s = ['##### {0} {{#block-header}}'.format(key)]
         s.append(parse_text(item))
         return '\n'.join(s)
 
     def parse_color_block(key, item):
-        s = [f'##### **{key}**']
+        s = ['##### **{0}**'.format(key)]
         for lst, desc in item:
             names = ', '.join([name for name, _ in lst])
             s.append(': '.join([names, parse_text(desc, ' ')]))
@@ -138,11 +141,11 @@ if __name__ == "__main__":
     out_dir = args.out_dir
 
     assert args.overwrite == os.path.exists(out_dir), \
-        f"{'Path does not exist' if args.overwrite else 'Not given permission to overwrite'}"
+        "{0}".format('Path does not exist' if args.overwrite else 'Not given permission to overwrite')
     if args.overwrite: shutil.rmtree(out_dir)        
     
     for module in get_package_contents(package_dirs):
-        print(f'{module}')
+        print(str(module))
         
         path = os.path.join(out_dir, module.replace('.', os.sep))
         dir_path, _ = os.path.split(path)
@@ -156,7 +159,7 @@ if __name__ == "__main__":
             write_mod_doc(module, f)
             
             for name, obj in get_module_contents(module):
-                print(f'\t {name}')
+                print('\t {0}'.format(name))
 
                 if isfunction(obj):
                     doc = FunctionDoc(obj)
@@ -168,7 +171,13 @@ if __name__ == "__main__":
                 s = []
                 for key, item in doc._parsed_data.items():
                     if item: # filter for empty collections and None
-                        s.append(generate_text(key, item))
+                        try: 
+                            txt = generate_text(key, item)
+                        except NotImplementedError as e:
+                            print('\t\t Error: {0} autodoc has not been implemented yet'.format(key))
+                        except KeyError as e:
+                            print('\t\t Error: {0} is not Numpy style docstring'.format(key))
+                        s.append(txt)
                 
                 s.insert(1,'<div class=\'desc\' markdown="1">')
                 s += ['---','</div>']
