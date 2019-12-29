@@ -147,12 +147,17 @@ if __name__ == "__main__":
     for module in get_package_contents(package_dirs):
         print(str(module))
         
-        path = os.path.join(out_dir, module.replace('.', os.sep))
-        dir_path, _ = os.path.split(path)
-        file_path = os.path.join(dir_path, args.prefix + module + args.suffix + '.md')
-        os.makedirs(dir_path, exist_ok=True)
+        # path = os.path.join(out_dir, module.replace('.', os.sep))
+        # dir_path, _ = os.path.split(path)
+
+        file_path = os.path.join(out_dir, args.prefix + module + args.suffix + '.md')
+        os.makedirs(out_dir, exist_ok=True)
 
         with open(file_path,"w+") as f:
+            intro_txt = 'Writing to path {0}'.format(file_path)
+            bars = '-' * len(intro_txt)
+            print('\t'+bars)
+            print('\t'+intro_txt)
             # write module details
             module = importlib.import_module(module)
 
@@ -182,6 +187,7 @@ if __name__ == "__main__":
                 s.insert(1,'<div class=\'desc\' markdown="1">')
                 s += ['---','</div>']
                 f.write('\n'.join(s))
+            print('\t'+bars)
 
             
             
