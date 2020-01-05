@@ -2,9 +2,11 @@
 *.npz
 *.npy
 
+*.pyc
+*.egg-info
 **/datasets
 
-/bin
-/lib
-/etc
-/share
+/models
+.*
+/jvaer-venv
+

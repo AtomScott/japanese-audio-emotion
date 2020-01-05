@@ -7,4 +7,4 @@ export CPATH=$CUDA_PATH/include:$CPATH
 export LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
 source ~/.bashrc
-source bin/activate
+source jvaer-venv/bin/activate

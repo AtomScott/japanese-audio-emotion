@@ -145,12 +145,13 @@ if __name__ == "__main__":
     if args.overwrite: shutil.rmtree(out_dir)        
     
     for module in get_package_contents(package_dirs):
-        print(str(module))
-        
-        # path = os.path.join(out_dir, module.replace('.', os.sep))
+        module = importlib.import_module(module)
+        print(module.__name__)
+
+        # path = os.path.join(out_dir, module.__name__.replace('.', os.sep))
         # dir_path, _ = os.path.split(path)
 
-        file_path = os.path.join(out_dir, args.prefix + module + args.suffix + '.md')
+        file_path = os.path.join(out_dir, args.prefix + module.__name__ + args.suffix + '.md')
         os.makedirs(out_dir, exist_ok=True)
 
         with open(file_path,"w+") as f:
@@ -159,11 +160,15 @@ if __name__ == "__main__":
             print('\t'+bars)
             print('\t'+intro_txt)
             # write module details
-            module = importlib.import_module(module)
+            
 
             write_mod_doc(module, f)
             
             for name, obj in get_module_contents(module):
+                # Don't document imported modules!
+                if not name.startswith(module.__name__):
+                    continue
+
                 print('\t {0}'.format(name))
 
                 if isfunction(obj):
