@@ -1,5 +1,6 @@
 import os, shutil, csv
 import random, string
+from collections import defaultdict
 
 from PIL import Image
 import torch
@@ -10,10 +11,10 @@ from facenet_pytorch import MTCNN, InceptionResnetV1
 from facenet_pytorch.models import utils as facenet_utils
 from facenet_pytorch.models.mtcnn import prewhiten
 
-import warnings
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    from pyod.models.auto_encoder import AutoEncoder
+# import warnings
+# with warnings.catch_warnings():
+#     warnings.simplefilter("ignore")
+from pyod.models.ocsvm import OCSVM
 
 from .logger import create_logger
 logger = create_logger(name=__name__)
@@ -133,8 +134,7 @@ def crop_faces(in_image_paths=[], image_size=160, replace_images=False, threshol
             logger.debug('image shape = {0}'.format(np.array(image).shape))
             boxes, probs = mtcnn.detect(image)  
         except Exception as e:
-            logger.debug(e)
-            logger.warning('Skipping bad image {0}'.format(image_path))
+            logger.debug('Skipping bad image {0}. Error: {1}'.format(image_path, e))
             continue
 
         if boxes is None: 
@@ -203,7 +203,7 @@ def embed_faces(in_image_paths=[], out_paths=[], return_values=['embeddings', 'o
     logger.info('using: {0}'.format('cuda:0' if torch.cuda.is_available() else 'cpu'))
     resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
     
-    ret_dct = {key: [] for key in return_values}
+    ret_dct = defaultdict(lambda : [])
     if not in_image_paths:
         in_image_paths = ['' for _ in images]
     if not out_paths:
@@ -260,7 +260,7 @@ def detect_outliers(lst):
     inliers : List
         A list of the inliers
     """    
-    clf = AutoEncoder(verbose=0)
+    clf = OCSVM(verbose=0)
     clf.fit(lst)
     
     inlier_idx = []

@@ -1,0 +1,3 @@
+#!/home/atom/emotion/v3.8/bin/python
+from numba.pycc import main
+main()

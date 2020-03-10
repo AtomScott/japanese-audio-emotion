@@ -18,4 +18,4 @@ root
 
 from setuptools import setup, find_packages
 
-setup(name="JVAER", packages=find_packages())
+setup(name="JAVER", packages=find_packages())

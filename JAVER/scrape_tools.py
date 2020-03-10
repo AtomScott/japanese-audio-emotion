@@ -4,6 +4,8 @@
 import os, sys, shutil, requests
 import re
 
+import atomity
+
 from google_images_download import google_images_download
 from .logger import create_logger
 
@@ -52,15 +54,19 @@ def get_face_images(query, n_images, out_dir_path, chromedriver_path="./chromedr
         "type": "face",
         "output_directory": out_dir_path,
         "chromedriver": chromedriver_path,
-        "silent_mode": True
+        "silent_mode": True,
+        "verbose":True
     }
-    out_image_paths = response.download(args)[0][query]
+    with atomity.suppress_stdout():
+        out_image_paths = response.download(args)[0][query]
     if len(out_image_paths) == 0:
-        logger.warning("Error. Couldn't get images, trying again.")
+        logger.debug("Error. Couldn't get images, trying again.")
         out_image_paths = get_face_images(query, n_images, out_dir_path, chromedriver_path)
-
+    else:
+        logger.info(f'Success: Loaded {len(out_image_paths)} images.')
     return out_image_paths
 
+# TODO: Make sure that videos are downloaded!!
 def get_yt_videos(query, out_dir_path, n):
     """Downloads youtube videos from a given query.
     
@@ -87,19 +93,21 @@ def get_yt_videos(query, out_dir_path, n):
     i = 0
     out_file_paths = []
     links = []
+    
     for l in res:
         fname = '{0}.mp4'.format(i)
         link = "https://www.youtube.com"+l.get("href")
+        logger.debug("Trying download for {0}".format(link))
         if link not in links:
             links.append(link)
             try:
                 myVideo = YouTube(link)
                 myVideo.streams.first().download(output_path=os.path.join(out_dir_path, query), filename=str(i))
-                i += 1 
                 out_file_paths.append(os.path.join(out_dir_path, fname))
                 logger.debug("Downloaded video: {0} @ {1}".format(link, os.path.join(out_dir_path,query, fname)))
+                i += 1 
             except Exception as e:
-                logger.debug(e)
+                logger.warning(e)
         else:
             pass
         if i >= n:
