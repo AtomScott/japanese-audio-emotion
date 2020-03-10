@@ -9,6 +9,7 @@
 /models
 .*
 /jvaer-venv
+/v3.8
 
 
 # Byte-compiled / optimized / DLL files
