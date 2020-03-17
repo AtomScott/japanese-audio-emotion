@@ -1,3 +1,4 @@
+
 # Models
 *.npz
 *.npy
@@ -5,7 +6,7 @@
 *.pyc
 *.egg-info
 **/datasets
-
+/notebooks/person_results
 /models
 .*
 /jvaer-venv
@@ -26,7 +27,7 @@ build/
 develop-eggs/
 dist/
 downloads/
-eggs/
+eggs/1
 .eggs/
 lib/
 lib64/
