@@ -18,4 +18,14 @@ root
 
 from setuptools import setup, find_packages
 
-setup(name="JAVER", packages=find_packages())
+setup(
+    name="JAVER",
+    version="0.1",
+    author="Atom Scott",
+    author_email="atom.james.scott@gmail.com",
+    url="https://github.com/AtomScott/japanese-audio-emotion",
+    packages=find_packages()
+    scripts=[
+        "scripts/scrape_and_track"
+    ]
+    )

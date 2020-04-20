@@ -1,12 +1,30 @@
+"""
+
+"""
+
+import numpy as np
+
+from PIL import Image
+
+from cvlab_toolbox.models import SubspaceMethod
+
+
 class FaceTracker:
     """
-    Tracks faces of a single person for a given range in a video.
+    Track faces of a single person for a given video.
+
+        Example
+       --------
+        >>> face_tracker = FaceTracker(160, "Elon_img.png", 1, 3, 1)
+        >>> face_tracker.track("Elon_vid.mp4")
+
     """
 
-    def __init__(self, image_size: int, ref_paths, batch_size: int, step_large: int, step_small):
+    def __init__(self, image_size: int, ref_paths:list, batch_size: int, step_large: int, step_small:int):
         self.batch_size = batch_size
         self.step_large = step_large
         self.step_small = step_small
+
         ref_faces = [Face(None, Image.open(path), None, is_face=True)
                      for path in ref_paths]
         x_train = np.asarray([face.embedding for face in ref_faces])
@@ -16,56 +34,71 @@ class FaceTracker:
         SM.fit([x_train], [y_train])
         self.clf = SM
 
-    def track(self, video_path: list, outpath=None):
-        """Tracks images of a single person in a given video path
+    def track(self, video_paths: list, out_dir: str):
+        """Tracks the face of a single person in a video.
 
         Parameters
         ----------
-        out_path : list
-            The output paths for each video
-        video_path : list
+        video_paths : list
             Paths to video
-        reference_images : list
-            Paths to images to use as reference for face recognition
+        out_dir : list
+            The output path for each video
 
         Returns
         -------
         [type]
             A list of bboxes corresponding to each image frame?
-        """
 
         """
-        1. Get bboxes and rois for every frame
-        """
-        faces_dict = self.detect(video_path)
 
-        # group bboxes by frame
+        for video_path in video_paths:
+            ################
+            # * Detect faces
+            ################
 
-        """
-        2. Associate faces and create trajectories
-        """
-        tracks = self.associate(faces_dict)
+            faces_dict = self.detect(video_path)
 
-        if outpath is None:
-            return tracks
-        else:
+            ###################
+            # * Associate faces
+            ###################
+
+            tracks = self.associate(faces_dict)
+
+            ###############
+            # * Save tracks
+            ###############
+
             clip = VideoFileClip(video_path)
             for track in tracks:
-
                 x1s, y1s, x2s, y2s = track.get_bboxes()
-                fx = lambda t: (x1s[t], x2s[t])
-                fy = lambda t: (y1s[t], y2s[t])
+                def fx(t): return (x1s[t], x2s[t])
+                def fy(t): return (y1s[t], y2s[t])
                 clip = clip.fx(moving_crop, fx=fx, fy=fy)
-            return None
+        return None
 
-    def detect(self, video_path):
+    def detect(self, video_path:str)->dict:
+        """Finds the faces in a video. Frames are skipped according to self.step_small
+        and self.step_large.
+        
+        Parameters
+        ----------
+        video_path : str
+            A path to a video file.
+        
+        Returns
+        -------
+        faces_dict : dict
+            A dictionary containing frame index (key) and list of Face objects
+            (value).
+        """
         step_large = self.step_large
         step_small = self.step_small
         assert step_small < step_large, "step_small must be smaller than step_large"
 
         batch_size = self.batch_size
 
-        self.frame_handler = frame_handler = FrameHandler(step_large, batch_size, video_path)
+        self.frame_handler = frame_handler = FrameHandler(
+            step_large, batch_size, video_path)
         faces_dict = defaultdict(lambda: [])
 
         # {i: [] for i in range(0, len(frame_handler), step_small)}
@@ -83,7 +116,8 @@ class FaceTracker:
             if frame_handler.step == step_large and bboxes_found_in_batch.size != 0:
 
                 # find first face in batch
-                first_face_idx = next(filter(lambda x: x[1].size, enumerate(bboxes_found_in_batch)))[0]
+                first_face_idx = next(
+                    filter(lambda x: x[1].size, enumerate(bboxes_found_in_batch)))[0]
                 rollback_idx = head_idx + frame_handler.step * first_face_idx
 
                 # roll back to rollback_idx
@@ -111,14 +145,29 @@ class FaceTracker:
                         break
 
                 if rollforward_idx != tail_idx:
-                    logger.info(f'Rollforward to {rollforward_idx} (Current tail @ {tail_idx})')
+                    logger.info(
+                        f'Rollforward to {rollforward_idx} (Current tail @ {tail_idx})')
                     frame_handler.idx = rollforward_idx
                     frame_handler.step = step_large
 
         logger.info("Finished Tracking")
         return faces_dict
 
-    def detect_faces(self, images, threshold=0.5):
+    def detect_faces(self, images:PIL.Image, threshold:float=0.5)->numpy.ndarray:
+        """Detect faces using an MTCNN detector
+        
+        Parameters
+        ----------
+        images : PIL.Image
+            [description]
+        threshold : float, optional
+            [description], by default 0.5
+        
+        Returns
+        -------
+        numpy.ndarray
+            A 2d list containing bounding boxes for each frame.
+        """
         bboxes_found, probs_found = mtcnn.detect(images)
 
         bboxes_above_thresh = []
@@ -130,10 +179,7 @@ class FaceTracker:
                 for idx, (bbox, prob) in enumerate(zip(bboxes, probs)):
                     if prob >= threshold:
                         x1, y1, x2, y2 = list(map(int, bbox))
-                        # if not 0 <= x1 <= x2 <= 1080:
-                        #     logger.error((x1, x2, 1080))
-                        # if not 0 <= y1 <= y2 <= 1920:
-                        #     logger.error((y1, y2, 1920))
+
                         _bboxes.append([x1, y1, x2, y2])
                         logger.debug(f'{idx} {x1, y1}, {x2, y2}, {prob:.4f}')
 
@@ -150,6 +196,7 @@ class FaceTracker:
             return False
 
     def associate(self, faces_dict):
+
         salt = 1 / 10 ** 9
         pepper = 10 ** 6
 
@@ -173,7 +220,8 @@ class FaceTracker:
                 # (faces[ri] is assigned to tracks_alive[ci])
                 for ri, ci in zip(row_idxs, col_idxs):
                     if gated_cost_matrix[ri, ci] < pepper:
-                        logger.debug(f'Frame: {frame}. Add face {ri} to track {ci}')
+                        logger.debug(
+                            f'Frame: {frame}. Add face {ri} to track {ci}')
                         tracks_alive[ci].update(faces[ri])
                         del faces[ri]
                     else:

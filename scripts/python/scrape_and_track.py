@@ -67,6 +67,4 @@ if __name__ =="__main__":
             )
 
             for video_path in video_paths:
-                tracks = face_tracker.track(video_path)
-                for track in tracks:
-                    track.save(out_dir=args.out_dir)
+                face_tracker.track(video_path)

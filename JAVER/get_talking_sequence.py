@@ -25,7 +25,7 @@ from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
 def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
-    """Downloads face images for a query.
+    """Downloads images of a given query from google image search.
     
     Parameters
     ----------
