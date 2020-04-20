@@ -1,24 +1,31 @@
-"""Tools to scrape the internet for data
-"""
-
-import os, sys, shutil, requests
-import re
-
-import atomity
+from code.arguments import parse_args
+from code.logger import create_logger
+from code.tests import Tester
 
 from google_images_download import google_images_download
-from .logger import create_logger
+import os
+import shutil
+
+from facenet_pytorch import MTCNN, InceptionResnetV1
+from facenet_pytorch.models import utils as facenet_utils
+from facenet_pytorch.models.mtcnn import prewhiten
+from PIL import Image
+import torch
+import numpy as np
+
+from pyod.models.auto_encoder import AutoEncoder
 
 from pytube import YouTube
 from bs4 import BeautifulSoup as bs
+import requests, re
 
-logger = create_logger(name=__name__)
+import imageio  
+from tqdm import tqdm
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
-def get_face_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
-    """Downloads face images for a query. 
-
-    This wraps [google_images_download](https://google-images-download.readthedocs.io/en/latest/arguments.html), but constrained to type=faces so that only images of faces are scraped. We rely on [type setting](https://www.google.com/advanced_image_search) in Google Image Search to find face images.
+def download_images(query, n_images, out_dir_path, chromedriver_path="./chromedriver"):
+    """Downloads face images for a query.
     
     Parameters
     ----------
@@ -37,10 +44,6 @@ def get_face_images(query, n_images, out_dir_path, chromedriver_path="./chromedr
     -------
     out_image_paths : list
         list of absolute paths to images
-    
-    Examples
-    --------
-
     """
     assert os.path.isfile(chromedriver_path), logger.critical("chromedriver not found")
     assert os.access(chromedriver_path, os.X_OK), logger.critical("chromedriver has incorrect permissions")
@@ -53,38 +56,98 @@ def get_face_images(query, n_images, out_dir_path, chromedriver_path="./chromedr
         "format": "jpg",
         "type": "face",
         "output_directory": out_dir_path,
-        "chromedriver": chromedriver_path,
-        "silent_mode": True,
-        "verbose":True
+        "chromedriver": "./chromedriver",
+        "silent_mode": True
     }
-    with atomity.suppress_stdout():
-        out_image_paths = response.download(args)[0][query]
+    out_image_paths = response.download(args)[0][query]
     if len(out_image_paths) == 0:
-        logger.debug("Error. Couldn't get images, trying again.")
-        out_image_paths = get_face_images(query, n_images, out_dir_path, chromedriver_path)
-    else:
-        logger.info(f'Success: Loaded {len(out_image_paths)} images.')
+        logger.warning("Error. Couldn't get images, trying again.")
+        out_image_paths = download_images(query, n_images, out_dir_path, chromedriver_path)
+
     return out_image_paths
 
-# TODO: Make sure that videos are downloaded!!
-def get_yt_videos(query, out_dir_path, n):
-    """Downloads youtube videos from a given query.
+# TODO: fix docstring
+# TODO: return image paths as well if necessary 
+def embed_faces(in_image_paths, save_embeddings=True, image_size=160, replace_images=False):
+    """Crops face(faces) in image and return the cropped area(areas) along with an embedding(embeddings).
+
+    
     
     Parameters
     ----------
-    query : str
-        The query to search for
-    out_dir_path : str
-        path to save the videos
-    n : int
-        Number of videos to save
+    in_image_paths : list
+        Path to images to crop
+    save_embeddings : bool, optional
+        Save the embeddings, by default True
+    image_size : int, optional
+        [description], by default 160
+    replace_images : bool, optional
+        [description], by default False
     
     Returns
     -------
-    out_paths : list
-        list of absolute paths to the videos
-    """
+    [type]
+        [description]
+    """    
 
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    mtcnn = MTCNN(image_size=image_size, keep_all=True, device=device)
+    resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
+    
+    all_embeddings = []
+    all_faces = []
+    all_boxes = []
+    for image_path in in_image_paths:
+        try :
+            image = Image.open(image_path)
+            boxes, _ = mtcnn.detect(image)
+
+            for index, box in enumerate(boxes):
+                if replace_images:
+                    os.remove(image_path)
+                    face = facenet_utils.detect_face.extract_face(image, box=box, save_path=image_path, image_size=image_size)
+                else:
+                    face = facenet_utils.detect_face.extract_face(image, box=box, image_size=image_size)
+                
+                face = prewhiten(face)
+                aligned = torch.stack([face]).to(device)
+                embedding = resnet(aligned).detach().cpu()
+
+
+                if save_embeddings is not None:
+                    dir_path, file_name = os.path.split(image_path)
+                    fname, _ = os.path.splitext(file_name)
+                    out_embedding_path = os.path.join(dir_path.replace('images', 'embeddings'), fname+str(index)+'.npy')
+                    np.save(out_embedding_path, embedding)  
+            
+                all_embeddings.append(embedding.cpu().detach().numpy()[0])
+                all_faces.append(face)
+                all_boxes.append(box)
+
+        except Exception as e:
+            logger.warning('Bad Image: {0}. Skipping..'.format(e))
+    
+    return all_embeddings, all_faces, all_boxes
+
+
+# TODO: add docstring
+def detect_outliers(lst):
+    clf = AutoEncoder(verbose=1)
+    clf.fit(lst)
+    
+    inliers = []
+    for index, data in enumerate(lst):
+        y = clf.predict(data.reshape(1,-1))
+        if y: # y==1 for outliers
+            logger.warning('Found outlier: {0}'.format(index))
+        else:
+            inliers.append(data)
+
+    logger.info('{:.0%} are outliers'.format(1 - len(inliers) / len(lst)))
+    return inliers
+
+# add docstring
+def scrape_videos(query, out_path, n):
     url ='https://www.youtube.com/results?search_query='+query
     r = requests.get(url)
     page = r.text
@@ -93,24 +156,29 @@ def get_yt_videos(query, out_dir_path, n):
     i = 0
     out_file_paths = []
     links = []
-    
     for l in res:
         fname = '{0}.mp4'.format(i)
         link = "https://www.youtube.com"+l.get("href")
-        logger.debug("Trying download for {0}".format(link))
         if link not in links:
             links.append(link)
-            try:
-                myVideo = YouTube(link)
-                myVideo.streams.first().download(output_path=os.path.join(out_dir_path, query), filename=str(i))
-                out_file_paths.append(os.path.join(out_dir_path, fname))
-                logger.debug("Downloaded video: {0} @ {1}".format(link, os.path.join(out_dir_path,query, fname)))
-                i += 1 
-            except Exception as e:
-                logger.warning(e)
+            myVideo = YouTube(link)
+            print(out_path, str(i))
+            myVideo.streams.first().download(output_path=out_path, filename=str(i))
+            i += 1 
+            out_file_paths.append(os.path.join(out_path, fname))
+            logger.info("Downloaded video: {0} @ {1}".format(link, os.path.join(out_path, fname)))
         else:
             pass
         if i >= n:
             break
-    logger.info("Successfully downloaded {0} videos.".format(i))
     return out_file_paths
+
+    
+
+
+        
+
+        
+
+    
+    

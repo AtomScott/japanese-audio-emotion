@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Test Report</title>
+    <link href="assets/style.css" rel="stylesheet" type="text/css"/></head>
+  <body onLoad="init()">
+    <script>/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+
+function toArray(iter) {
+    if (iter === null) {
+        return null;
+    }
+    return Array.prototype.slice.call(iter);
+}
+
+function find(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return elem.querySelector(selector);
+}
+
+function find_all(selector, elem) {
+    if (!elem) {
+        elem = document;
+    }
+    return toArray(elem.querySelectorAll(selector));
+}
+
+function sort_column(elem) {
+    toggle_sort_states(elem);
+    var colIndex = toArray(elem.parentNode.childNodes).indexOf(elem);
+    var key;
+    if (elem.classList.contains('numeric')) {
+        key = key_num;
+    } else if (elem.classList.contains('result')) {
+        key = key_result;
+    } else {
+        key = key_alpha;
+    }
+    sort_table(elem, key(colIndex));
+}
+
+function show_all_extras() {
+    find_all('.col-result').forEach(show_extras);
+}
+
+function hide_all_extras() {
+    find_all('.col-result').forEach(hide_extras);
+}
+
+function show_extras(colresult_elem) {
+    var extras = colresult_elem.parentNode.nextElementSibling;
+    var expandcollapse = colresult_elem.firstElementChild;
+    extras.classList.remove("collapsed");
+    expandcollapse.classList.remove("expander");
+    expandcollapse.classList.add("collapser");
+}
+
+function hide_extras(colresult_elem) {
+    var extras = colresult_elem.parentNode.nextElementSibling;
+    var expandcollapse = colresult_elem.firstElementChild;
+    extras.classList.add("collapsed");
+    expandcollapse.classList.remove("collapser");
+    expandcollapse.classList.add("expander");
+}
+
+function show_filters() {
+    var filter_items = document.getElementsByClassName('filter');
+    for (var i = 0; i < filter_items.length; i++)
+        filter_items[i].hidden = false;
+}
+
+function add_collapse() {
+    // Add links for show/hide all
+    var resulttable = find('table#results-table');
+    var showhideall = document.createElement("p");
+    showhideall.innerHTML = '<a href="javascript:show_all_extras()">Show all details</a> / ' +
+                            '<a href="javascript:hide_all_extras()">Hide all details</a>';
+    resulttable.parentElement.insertBefore(showhideall, resulttable);
+
+    // Add show/hide link to each result
+    find_all('.col-result').forEach(function(elem) {
+        var collapsed = get_query_parameter('collapsed') || 'Passed';
+        var extras = elem.parentNode.nextElementSibling;
+        var expandcollapse = document.createElement("span");
+        if (extras.classList.contains("collapsed")) {
+            expandcollapse.classList.add("expander")
+        } else if (collapsed.includes(elem.innerHTML)) {
+            extras.classList.add("collapsed");
+            expandcollapse.classList.add("expander");
+        } else {
+            expandcollapse.classList.add("collapser");
+        }
+        elem.appendChild(expandcollapse);
+
+        elem.addEventListener("click", function(event) {
+            if (event.currentTarget.parentNode.nextElementSibling.classList.contains("collapsed")) {
+                show_extras(event.currentTarget);
+            } else {
+                hide_extras(event.currentTarget);
+            }
+        });
+    })
+}
+
+function get_query_parameter(name) {
+    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+}
+
+function init () {
+    reset_sort_headers();
+
+    add_collapse();
+
+    show_filters();
+
+    sort_column(find('.initial-sort'));
+
+    find_all('.sortable').forEach(function(elem) {
+        elem.addEventListener("click",
+                              function(event) {
+                                  sort_column(elem);
+                              }, false)
+    });
+
+};
+
+function sort_table(clicked, key_func) {
+    var rows = find_all('.results-table-row');
+    var reversed = !clicked.classList.contains('asc');
+    var sorted_rows = sort(rows, key_func, reversed);
+    /* Whole table is removed here because browsers acts much slower
+     * when appending existing elements.
+     */
+    var thead = document.getElementById("results-table-head");
+    document.getElementById('results-table').remove();
+    var parent = document.createElement("table");
+    parent.id = "results-table";
+    parent.appendChild(thead);
+    sorted_rows.forEach(function(elem) {
+        parent.appendChild(elem);
+    });
+    document.getElementsByTagName("BODY")[0].appendChild(parent);
+}
+
+function sort(items, key_func, reversed) {
+    var sort_array = items.map(function(item, i) {
+        return [key_func(item), i];
+    });
+
+    sort_array.sort(function(a, b) {
+        var key_a = a[0];
+        var key_b = b[0];
+
+        if (key_a == key_b) return 0;
+
+        if (reversed) {
+            return (key_a < key_b ? 1 : -1);
+        } else {
+            return (key_a > key_b ? 1 : -1);
+        }
+    });
+
+    return sort_array.map(function(item) {
+        var index = item[1];
+        return items[index];
+    });
+}
+
+function key_alpha(col_index) {
+    return function(elem) {
+        return elem.childNodes[1].childNodes[col_index].firstChild.data.toLowerCase();
+    };
+}
+
+function key_num(col_index) {
+    return function(elem) {
+        return parseFloat(elem.childNodes[1].childNodes[col_index].firstChild.data);
+    };
+}
+
+function key_result(col_index) {
+    return function(elem) {
+        var strings = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed',
+                       'Skipped', 'Passed'];
+        return strings.indexOf(elem.childNodes[1].childNodes[col_index].firstChild.data);
+    };
+}
+
+function reset_sort_headers() {
+    find_all('.sort-icon').forEach(function(elem) {
+        elem.parentNode.removeChild(elem);
+    });
+    find_all('.sortable').forEach(function(elem) {
+        var icon = document.createElement("div");
+        icon.className = "sort-icon";
+        icon.textContent = "vvv";
+        elem.insertBefore(icon, elem.firstChild);
+        elem.classList.remove("desc", "active");
+        elem.classList.add("asc", "inactive");
+    });
+}
+
+function toggle_sort_states(elem) {
+    //if active, toggle between asc and desc
+    if (elem.classList.contains('active')) {
+        elem.classList.toggle('asc');
+        elem.classList.toggle('desc');
+    }
+
+    //if inactive, reset all other functions and add ascending active
+    if (elem.classList.contains('inactive')) {
+        reset_sort_headers();
+        elem.classList.remove('inactive');
+        elem.classList.add('active');
+    }
+}
+
+function is_all_rows_hidden(value) {
+  return value.hidden == false;
+}
+
+function filter_table(elem) {
+    var outcome_att = "data-test-result";
+    var outcome = elem.getAttribute(outcome_att);
+    class_outcome = outcome + " results-table-row";
+    var outcome_rows = document.getElementsByClassName(class_outcome);
+
+    for(var i = 0; i < outcome_rows.length; i++){
+        outcome_rows[i].hidden = !elem.checked;
+    }
+
+    var rows = find_all('.results-table-row').filter(is_all_rows_hidden);
+    var all_rows_hidden = rows.length == 0 ? true : false;
+    var not_found_message = document.getElementById("not-found-message");
+    not_found_message.hidden = !all_rows_hidden;
+}
+</script>
+    <h1>test_report.html</h1>
+    <p>Report generated on 31-Mar-2020 at 01:39:37 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a> v2.1.1</p>
+    <h2>Environment</h2>
+    <table id="environment">
+      <tr>
+        <td>Packages</td>
+        <td>{"pluggy": "0.13.0", "py": "1.8.0", "pytest": "5.2.0"}</td></tr>
+      <tr>
+        <td>Platform</td>
+        <td>Linux-4.4.0-166-generic-x86_64-with-glibc2.2.5</td></tr>
+      <tr>
+        <td>Plugins</td>
+        <td>{"forked": "1.1.3", "html": "2.1.1", "metadata": "1.8.0", "xdist": "1.31.0"}</td></tr>
+      <tr>
+        <td>Python</td>
+        <td>3.8.1</td></tr></table>
+    <h2>Summary</h2>
+    <p>15 tests ran in 26.29 seconds. </p>
+    <p class="filter" hidden="true">(Un)check the boxes to filter the results.</p><input checked="true" class="filter" data-test-result="passed" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="passed">7 passed</span>, <input checked="true" class="filter" data-test-result="skipped" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="skipped">0 skipped</span>, <input checked="true" class="filter" data-test-result="failed" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="failed">8 failed</span>, <input checked="true" class="filter" data-test-result="error" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="error">2 errors</span>, <input checked="true" class="filter" data-test-result="xfailed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xfailed">0 expected failures</span>, <input checked="true" class="filter" data-test-result="xpassed" disabled="true" hidden="true" name="filter_checkbox" onChange="filter_table(this)" type="checkbox"/><span class="xpassed">0 unexpected passes</span>
+    <h2>Results</h2>
+    <table id="results-table">
+      <thead id="results-table-head">
+        <tr>
+          <th class="sortable result initial-sort" col="result">Result</th>
+          <th class="sortable" col="name">Test</th>
+          <th class="sortable numeric" col="duration">Duration</th>
+          <th>Links</th></tr>
+        <tr hidden="true" id="not-found-message">
+          <th colspan="4">No results found. Try to check the filters</th></tr></thead>
+      <tbody class="error results-table-row">
+        <tr>
+          <td class="col-result">Error</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_detect[data/Elon Musk/sample_mid.mp4]::setup</td>
+          <td class="col-duration">0.03</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">@pytest.fixture()<br/>    def mtcnn():<br/>        import torch<br/>        from facenet_pytorch import MTCNN<br/>        device = torch.device(&#x27;cuda:0&#x27; if torch.cuda.is_available() else &#x27;cpu&#x27;)<br/>&gt;       mtcnn = MTCNN(image_size=160, keep_all=True, device=device)<br/><br/>conftest.py:86: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>../v3.8/lib/python3.8/site-packages/facenet_pytorch/models/mtcnn.py:208: in __init__<br/>    self.to(device)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:425: in to<br/>    return self._apply(convert)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:201: in _apply<br/>    module._apply(fn)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:201: in _apply<br/>    module._apply(fn)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:223: in _apply<br/>    param_applied = fn(param)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>t = Parameter containing:<br/>tensor([[[[-0.0816,  0.8359,  1.2465],<br/>          [-0.0150,  0.2380, -1.3453],<br/>          [ 0.1246... 0.2698, -1.0193],<br/>          [-0.9542,  0.3225, -0.4546],<br/>          [-0.0500,  0.3450,  0.5087]]]], requires_grad=True)<br/><br/>    def convert(t):<br/>&gt;       return t.to(device, dtype if t.is_floating_point() else None, non_blocking)<br/><span class="error">E       RuntimeError: CUDA error: an illegal memory access was encountered</span><br/><br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:423: RuntimeError<br/></div></td></tr></tbody>
+      <tbody class="error results-table-row">
+        <tr>
+          <td class="col-result">Error</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_detect_faces::setup</td>
+          <td class="col-duration">0.03</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">@pytest.fixture()<br/>    def face_tracker():<br/>        from JAVER.track_tools import FaceTracker<br/>    <br/>        p = Path(&quot;data/Elon Musk/&quot;)<br/>        ref_paths = list(p.glob(&quot;inliers/*&quot;))<br/>&gt;       face_tracker = FaceTracker(image_size=160, ref_paths=ref_paths, batch_size=100, step_large=100, step_small=10)<br/><br/>conftest.py:77: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>../JAVER/track_tools.py:167: in __init__<br/>    ref_faces = [Face(None, Image.open(path), None, is_face=True)<br/>../JAVER/track_tools.py:167: in &lt;listcomp&gt;<br/>    ref_faces = [Face(None, Image.open(path), None, is_face=True)<br/>../JAVER/track_tools.py:43: in __init__<br/>    self.embedding = self.get_embedding()<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = &lt;JAVER.track_tools.Face object at 0x7f50b9c28610&gt;<br/><br/>    def get_embedding(self):<br/>    <br/>        tensor = facenet_utils.detect_face.extract_face(<br/>            self.img, box=self.bbox, image_size=160)<br/>    <br/>&gt;       aligned = torch.stack([prewhiten(tensor)]).to(device)<br/><span class="error">E       RuntimeError: CUDA error: an illegal memory access was encountered</span><br/><br/>../JAVER/track_tools.py:64: RuntimeError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFace::test_get_embedding</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFace object at 0x7f50b9d62f10&gt;<br/><br/>    def test_get_embedding(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:26: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestTrajectory::test_update_state</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestTrajectory object at 0x7f50b9db6c70&gt;<br/><br/>    def test_update_state(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:31: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestTrajectory::test_update_gallery</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestTrajectory object at 0x7f50b9d92b80&gt;<br/><br/>    def test_update_gallery(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:34: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFrameHandler::test_has_next</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFrameHandler object at 0x7f50b9de5550&gt;<br/><br/>    def test_has_next(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:57: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_track</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFaceTracker object at 0x7f50b9dd2850&gt;<br/><br/>    def test_track(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:63: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_detect[data/Elon Musk/sample_short.mp4]</td>
+          <td class="col-duration">12.29</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFaceTracker object at 0x7f50b9ded8b0&gt;<br/>video_path = &#x27;data/Elon Musk/sample_short.mp4&#x27;<br/>mtcnn = MTCNN(<br/>  (pnet): PNet(<br/>    (conv1): Conv2d(3, 10, kernel_size=(3, 3), stride=(1, 1))<br/>    (prelu1): PReLU(num_parameter...r(in_features=256, out_features=4, bias=True)<br/>    (dense6_3): Linear(in_features=256, out_features=10, bias=True)<br/>  )<br/>)<br/>face_tracker = &lt;JAVER.track_tools.FaceTracker object at 0x7f50b9db6550&gt;<br/>log = &lt;Logger example (DEBUG)&gt;<br/><br/>    @pytest.mark.parametrize(&quot;video_path&quot;, [<br/>        &quot;data/Elon Musk/sample_short.mp4&quot;,<br/>        &quot;data/Elon Musk/sample_mid.mp4&quot;,<br/>    ])<br/>    def test_detect(self, video_path, mtcnn, face_tracker, log):<br/>    <br/>&gt;       faces_dict = face_tracker.detect(video_path)<br/><br/>test_track_tools.py:71: <br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/>../JAVER/track_tools.py:224: in detect<br/>    bboxes_found_in_batch = self.detect_faces(frames)<br/>../JAVER/track_tools.py:273: in detect_faces<br/>    bboxes_found, probs_found = mtcnn.detect(images)<br/>../v3.8/lib/python3.8/site-packages/facenet_pytorch/models/mtcnn.py:336: in detect<br/>    batch_boxes = detect_face(<br/>../v3.8/lib/python3.8/site-packages/facenet_pytorch/models/utils/detect_face.py:34: in detect_face<br/>    reg, probs = pnet(im_data)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:532: in __call__<br/>    result = self.forward(*input, **kwargs)<br/>../v3.8/lib/python3.8/site-packages/facenet_pytorch/models/mtcnn.py:39: in forward<br/>    x = self.conv1(x)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/module.py:532: in __call__<br/>    result = self.forward(*input, **kwargs)<br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/conv.py:345: in forward<br/>    return self.conv2d_forward(input, self.weight)<br/>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ <br/><br/>self = Conv2d(3, 10, kernel_size=(3, 3), stride=(1, 1))<br/>input = &lt;[RuntimeError(&quot;CUDA error: an illegal memory access was encountered&quot;) raised in repr()] Tensor object at 0x7f50b9cc2e00&gt;<br/>weight = &lt;[RuntimeError(&quot;CUDA error: an illegal memory access was encountered&quot;) raised in repr()] Parameter object at 0x7f50bb9f5f40&gt;<br/><br/>    def conv2d_forward(self, input, weight):<br/>        if self.padding_mode == &#x27;circular&#x27;:<br/>            expanded_padding = ((self.padding[1] + 1) // 2, self.padding[1] // 2,<br/>                                (self.padding[0] + 1) // 2, self.padding[0] // 2)<br/>            return F.conv2d(F.pad(input, expanded_padding, mode=&#x27;circular&#x27;),<br/>                            weight, self.bias, self.stride,<br/>                            _pair(0), self.dilation, self.groups)<br/>&gt;       return F.conv2d(input, weight, self.bias, self.stride,<br/>                        self.padding, self.dilation, self.groups)<br/><span class="error">E       RuntimeError: CUDA error: an illegal memory access was encountered</span><br/><br/>../v3.8/lib/python3.8/site-packages/torch/nn/modules/conv.py:341: RuntimeError<br/> ------------------------------Captured stderr call------------------------------ <br/>[2020-03-31 01:39:35,303] <span class="ansi32">INFO @ line 233: Rollback to 0</span>
+[2020-03-31 01:39:35,304] <span class="ansi33">WARNING @ line 122: Step size too big!!</span>
+<br/> -------------------------------Captured log call-------------------------------- <br/><span class="ansi32">INFO    </span> JAVER.logger:track_tools.py:233 Rollback to 0
+<span class="ansi33">WARNING </span> JAVER.logger:track_tools.py:122 Step size too big!!<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_is_reference_face</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFaceTracker object at 0x7f50b950d1f0&gt;<br/><br/>    def test_is_reference_face(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:116: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="failed results-table-row">
+        <tr>
+          <td class="col-result">Failed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFaceTracker::test_associate</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log">self = &lt;tests.test_track_tools.TestFaceTracker object at 0x7f50b9504fd0&gt;<br/><br/>    def test_associate(self):<br/>&gt;       assert False<br/><span class="error">E       assert False</span><br/><br/>test_track_tools.py:119: AssertionError<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_conftest.py::test_image_data</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_conftest.py::test_video_data</td>
+          <td class="col-duration">0.73</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_tests.py::test_print[Hello World!]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stderr call------------------------------ <br/><span class="ansi36"> 01:39:1210 @test_print:7:	Hello World!</span>
+<span class="ansi32"> 01:39:1220 @test_print:8:	Hello World!</span>
+<span class="ansi33"> 01:39:1230 @test_print:9:	Hello World!</span>
+<span class="ansi31"> 01:39:1240 @test_print:10:	Hello World!</span>
+<span class="ansi31"></span><span class="ansi31 ansi47"> 01:39:1250 @test_print:11:	Hello World!</span>
+<br/> -------------------------------Captured log call-------------------------------- <br/><span class="ansi35">DEBUG   </span> example:test_tests.py:7 Hello World!
+<span class="ansi32">INFO    </span> example:test_tests.py:8 Hello World!
+<span class="ansi33">WARNING </span> example:test_tests.py:9 Hello World!
+<span class="ansi1"></span><span class="ansi1 ansi31">ERROR   </span> example:test_tests.py:10 Hello World!
+<span class="ansi31">CRITICAL</span> example:test_tests.py:11 Hello World!<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_tests.py::test_print[DeEZ NuTs]</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="log"> ------------------------------Captured stderr call------------------------------ <br/><span class="ansi36"> 01:39:1210 @test_print:7:	DeEZ NuTs</span>
+<span class="ansi36"> 01:39:1210 @test_print:7:	DeEZ NuTs</span>
+<span class="ansi32"> 01:39:1220 @test_print:8:	DeEZ NuTs</span>
+<span class="ansi32"> 01:39:1220 @test_print:8:	DeEZ NuTs</span>
+<span class="ansi33"> 01:39:1230 @test_print:9:	DeEZ NuTs</span>
+<span class="ansi33"> 01:39:1230 @test_print:9:	DeEZ NuTs</span>
+<span class="ansi31"> 01:39:1240 @test_print:10:	DeEZ NuTs</span>
+<span class="ansi31"> 01:39:1240 @test_print:10:	DeEZ NuTs</span>
+<span class="ansi31"></span><span class="ansi31 ansi47"> 01:39:1250 @test_print:11:	DeEZ NuTs</span>
+<span class="ansi31"></span><span class="ansi31 ansi47"> 01:39:1250 @test_print:11:	DeEZ NuTs</span>
+<br/> -------------------------------Captured log call-------------------------------- <br/><span class="ansi35">DEBUG   </span> example:test_tests.py:7 DeEZ NuTs
+<span class="ansi32">INFO    </span> example:test_tests.py:8 DeEZ NuTs
+<span class="ansi33">WARNING </span> example:test_tests.py:9 DeEZ NuTs
+<span class="ansi1"></span><span class="ansi1 ansi31">ERROR   </span> example:test_tests.py:10 DeEZ NuTs
+<span class="ansi31">CRITICAL</span> example:test_tests.py:11 DeEZ NuTs<br/></div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFace::test_is_valid</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFace::test_get_roi</td>
+          <td class="col-duration">0.00</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody>
+      <tbody class="passed results-table-row">
+        <tr>
+          <td class="col-result">Passed</td>
+          <td class="col-name">tests/test_track_tools.py::TestFrameHandler::test_next</td>
+          <td class="col-duration">1.08</td>
+          <td class="col-links"></td></tr>
+        <tr>
+          <td class="extra" colspan="4">
+            <div class="empty log">No log output captured.</div></td></tr></tbody></table></body></html>
