@@ -1,5 +1,7 @@
 import os
 import shutil
+
+from JAVER.utils import create_logger
 from google_images_download import google_images_download
 
 logger = create_logger()

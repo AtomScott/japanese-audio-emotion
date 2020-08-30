@@ -1,5 +1,12 @@
 import numpy as np
 from scipy.spatial.distance import mahalanobis
+import itertools as it
+
+from JAVER.track_tools.track_tools import Face, Track
+
+from JAVER.utils.logger import create_logger
+
+logger = create_logger(level='DEBUG')
 
 
 def _d_1(face, track):
@@ -30,7 +37,8 @@ def _d_2(face, track):
     for _face in track.gallery:
         r_i = _face.embedding
         r_j_dist = r_j.T @ r_i
-        assert 0 <= r_j_dist <= 1
+        # assert 0 <= r_j_dist <= 1
+        if not 0 <= r_j_dist <= 1: logger.warning(r_j_dist)
         dist = min(dist, r_j_dist)
     return 1 - dist
 

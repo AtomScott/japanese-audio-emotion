@@ -3,26 +3,24 @@ from collections import defaultdict
 
 import PIL
 import cv2
-import mmcv
+
 import numpy as np
 import torch
 from PIL import Image
-from cvt.models import SubspaceMethod
+# from cvt.models import SubspaceMethod
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from facenet_pytorch.models import utils as facenet_utils
 from facenet_pytorch.models.mtcnn import prewhiten
 from scipy.spatial.distance import mahalanobis
 from scipy.optimize import linear_sum_assignment
 from scipy.interpolate import interp1d
-from .logger import create_logger
-from moviepy.editor import VideoFileClip
+from JAVER.utils.logger import create_logger
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 mtcnn = MTCNN(keep_all=True, device=device)
 resnet = InceptionResnetV1(pretrained='vggface2').eval().to(device)
 
 logger = create_logger(level='DEBUG')
-
 
 
 def format_input(X, y):
@@ -105,6 +103,12 @@ class Track:
         self.none_count = 0
         pass
 
+    def get_track_start(self):
+        return self.gallery[0].idx
+
+    def get_track_end(self):
+        return self.gallery[-1].idx
+
     def predict_state(self):
         x_now = self.state_x
         P_now = self.state_cov
@@ -186,6 +190,3 @@ class Track:
             bboxes_new.append(f(idxs_new))
 
         return np.asarray(bboxes_new)
-
-
-

@@ -64,7 +64,7 @@ def frame_handler():
     from JAVER.track_tools import FrameHandler
     step = 5
     batch_size = 25
-    video_path = "data/Elon Musk/sample_short.mp4"
+    video_path = "../notebooks/Face Tracking Comparisons/sample_short.mp4"
     return FrameHandler(step, batch_size, video_path)
 
 
