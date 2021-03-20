@@ -55,7 +55,7 @@ ipywidgets==7.5.1
 isort==4.3.21
 -e git+https://github.com/AtomScott/japanese-audio-emotion.git@b619606580f1a79332e37411477edeffaaeefc19#egg=JAVER
 jedi==0.15.1
-Jinja2==2.10.1
+Jinja2==2.11.3
 joblib==0.14.0
 json5==0.8.5
 jsonschema==3.0.2
