@@ -115,7 +115,7 @@ py==1.8.0
 pycodestyle==2.5.0
 pydot==1.4.1
 pygame==2.0.0.dev6
-Pygments==2.4.2
+Pygments==2.7.4
 pykalman==0.9.5
 pyod==0.7.5
 pyparsing==2.4.2
